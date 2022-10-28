@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">SpellingCheckWithOCR</string>
+    <string name="app_name">맞춤법 검사기</string>
+    <string name="setting">setting</string>
+    <string name="info">info</string>
+    <string name="toolbarTitle">사진 찍어서 맞춤법 검사하기</string>
+    <string name="appTitle">사진 찍어서 맞춤법 검사</string>
 </resources>
