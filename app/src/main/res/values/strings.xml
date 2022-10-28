@@ -4,4 +4,7 @@
     <string name="info">info</string>
     <string name="toolbarTitle">사진 찍어서 맞춤법 검사하기</string>
     <string name="appTitle">사진 찍어서 맞춤법 검사</string>
+    <string name="takePhoto">1. 사진 찍기</string>
+    <string name="extractString">2. 글자 읽기</string>
+    <string name="checkSpelling">3. 맞춤법 검사</string>
 </resources>
