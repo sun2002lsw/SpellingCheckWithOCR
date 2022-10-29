@@ -25,8 +25,12 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        // 상단 탭
+        // 상단 탭. 일단 다른 2개 탭은 비활성화
         tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.getTabAt(1).view.setClickable(false);
+        tabLayout.getTabAt(2).view.setClickable(false);
+        
+        // 탭 아래의 프레그먼트 화면
         viewPager = findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         // 탭을 스와이프 했을 때
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -63,5 +68,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
+    }
+
+    // 해당 탭까지 활성화
+    public void enableTab(int position) {
+        tabLayout.getTabAt(position).view.setClickable(true);
+        viewPagerAdapter.setItemCount(position + 1);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setCurrentItem(position);
     }
 }

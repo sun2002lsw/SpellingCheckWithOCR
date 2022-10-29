@@ -11,9 +11,9 @@ import fragments.takePhoto;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
-    }
+    private int availableTabCnt = 1;
+
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) { super(fragmentActivity); }
 
     @NonNull
     @Override
@@ -30,6 +30,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return availableTabCnt;
     }
+
+    public void setItemCount(int cnt) { availableTabCnt = cnt; }
 }
