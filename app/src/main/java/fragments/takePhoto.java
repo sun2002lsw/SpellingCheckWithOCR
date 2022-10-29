@@ -3,6 +3,7 @@ package fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -28,13 +30,13 @@ import com.example.spellingcheckwithocr.R;
 
 public class takePhoto extends Fragment {
 
-    private int CAMERA_PERMISSION_CODE = 101;
+    private int CAMERA_PERMISSION_CODE = 0x00AF;
+
     private ImageView imageView;
     private Button takePhotoBtn, extractStringBnt;
-    private Bitmap picture;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_take_photo, container, false);
 
         imageView = view.findViewById(R.id.picture);
@@ -57,9 +59,15 @@ public class takePhoto extends Fragment {
         extractStringBnt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).enableTab(1);
+                ((MainActivity)getActivity()).EnableTab(1);
             }
         });
+
+        // 혹시 이미 사진을 찍었으면 그걸로 처리
+        Bitmap picture = ((MainActivity)getActivity()).GetPicture();
+        if (picture != null) {
+            AfterTakePicture(picture);
+        }
 
         return view;
     }
@@ -75,15 +83,30 @@ public class takePhoto extends Fragment {
     ActivityResultLauncher<Intent> activityResultPicture = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
+                @SuppressLint("ResourceAsColor")
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Bundle extras = result.getData().getExtras();
-                        picture = (Bitmap) extras.get("data");
-                        imageView.setImageBitmap(picture);
-                        takePhotoBtn.setText("다시 찍기");
-                        extractStringBnt.setEnabled(true);
+                        Bitmap picture = (Bitmap) extras.get("data");
+                        ((MainActivity)getActivity()).SetPicture(picture);
+
+                        AfterTakePicture(picture);
                     }
                 }
             });
+    
+    // 사진이 있을 때 후처리
+    private void AfterTakePicture(Bitmap picture) {
+        // 촬영 이미지
+        imageView.setImageBitmap(picture);
+
+        // 촬영 버튼
+        takePhotoBtn.setText("다시 찍기");
+        takePhotoBtn.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.yellow));
+
+        // 다음 탭 진행 버튼
+        extractStringBnt.setEnabled(true);
+        extractStringBnt.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.green));
+    }
 }

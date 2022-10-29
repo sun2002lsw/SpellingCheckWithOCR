@@ -12,13 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="20dp"
         android:contentDescription="@string/photoImageViewDesc"
+        android:padding="20dp"
         android:src="@android:drawable/ic_menu_camera"
-        app:layout_constraintBottom_toTopOf="@+id/takePhoto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,8 +31,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="10dp"
             android:autoSizeTextType="uniform"
-            android:backgroundTint="@android:color/holo_green_light"
-            android:gravity="center"
+            android:backgroundTint="@color/green"
             android:text="@string/takePhoto"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -53,6 +48,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:autoSizeTextType="uniform"
+            android:backgroundTint="@color/grey"
             android:text="@string/extractString"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="fragments.extractString">
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/picture2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="@string/photoImageViewDesc"
+        android:padding="20dp"
+        android:src="@android:drawable/ic_menu_camera"
+        tools:ignore="ImageContrastCheck" />
+
+    <EditText
+        android:id="@+id/extractedString"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="@string/extractString"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:autofillHints="" />
+
+</LinearLayout>

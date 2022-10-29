@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -11,10 +12,12 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar mToolbar;
-    TabLayout tabLayout;
-    ViewPager2 viewPager;
-    ViewPagerAdapter viewPagerAdapter;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+
+    private Bitmap picture;
+    private String extractedString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // 내가 만든 툴바를 가져와서 해당 툴바를 액션바로 설정
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // 상단 탭. 일단 다른 2개 탭은 비활성화
         tabLayout = findViewById(R.id.tabLayout);
@@ -59,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+
+                TabLayout.Tab tab = tabLayout.getTabAt(position);
+                if (tab != null) {
+                    tab.select();
+                }
             }
         });
     }
@@ -71,10 +78,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 해당 탭까지 활성화
-    public void enableTab(int position) {
-        tabLayout.getTabAt(position).view.setClickable(true);
+    public void EnableTab(int position) {
+        TabLayout.Tab tab = tabLayout.getTabAt(position);
+        if (tab != null) {
+            tab.view.setClickable(true);
+        }
+
         viewPagerAdapter.setItemCount(position + 1);
-        viewPager.setAdapter(viewPagerAdapter);
-        viewPager.setCurrentItem(position);
+
+        if (viewPager.getCurrentItem() > position) {
+            viewPager.setCurrentItem(position);
+            viewPager.setAdapter(viewPagerAdapter);
+        } else {
+            viewPager.setAdapter(viewPagerAdapter);
+            viewPager.setCurrentItem(position);
+        }
+    }
+
+    // 촬영한 사진
+    public void SetPicture(Bitmap picture) {
+        this.picture = picture;
+    }
+    public Bitmap GetPicture() {
+        return this.picture;
+    }
+
+    // 추출된 문자열
+    public void SetOCR(String str) {
+        this.extractedString = str;
+    }
+    public String GetOCR() {
+        return this.extractedString;
     }
 }
