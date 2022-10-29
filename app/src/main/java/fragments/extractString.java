@@ -3,6 +3,7 @@ package fragments;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,32 +30,32 @@ public class extractString extends Fragment {
 
     private String dataPath = "" ; //언어데이터가 있는 경로
     private TessBaseAPI tessAPI;
-    private Bitmap picture;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_extract_string, container, false);
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
-        picture = ((MainActivity)getActivity()).GetPicture();
-        if (picture == null) {
+        Uri pictureUri = ((MainActivity)getActivity()).GetPictureUri();
+        if (pictureUri == null) {
             ((MainActivity)getActivity()).EnableTab(0);
             return view;
         }
 
         // 찍어둔 사진 출력
         ImageView imageView = view.findViewById(R.id.picture2);
-        imageView.setImageBitmap(picture);
+        imageView.setImageURI(pictureUri);
 
+        // OCR
         InitTess();
-        ProcessImage(view);
+        ProcessOCR(view);
 
         return view;
     }
 
     private void InitTess() {
         //언어파일 경로
-        dataPath = this.getContext().getFilesDir() + "/tesseract/";
+        dataPath = getContext().getFilesDir() + "/tesseract/";
 
         //트레이닝데이터가 카피되어 있는지 체크
         CheckFile(new File(dataPath + "tessdata/"));
@@ -81,7 +82,7 @@ public class extractString extends Fragment {
 
     private void CopyFiles() {
         try{
-            AssetManager assetManager = this.getContext().getAssets();
+            AssetManager assetManager = getContext().getAssets();
             InputStream istream = assetManager.open("eng.traineddata");
 
             String filepath = dataPath + "/tessdata/eng.traineddata";
@@ -104,9 +105,13 @@ public class extractString extends Fragment {
         }
     }
 
-    public void ProcessImage(View view) {
-        tessAPI.setImage(picture);
+    public void ProcessOCR(View view) {
+        Uri pictureUri = ((MainActivity)getActivity()).GetPictureUri();
+        File pictureFile = new File(pictureUri.getPath());
+
+        tessAPI.setImage(pictureFile);
         String extractedString = tessAPI.getUTF8Text();
+        ((MainActivity)getActivity()).SetExtractedString(extractedString);
 
         EditText editText = view.findViewById(R.id.extractedString);
         editText.setText(extractedString);

@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private ViewPagerAdapter viewPagerAdapter;
 
-    private Bitmap picture;
+    private Uri pictureUri;
     private String extractedString;
 
     @Override
@@ -96,18 +97,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 촬영한 사진
-    public void SetPicture(Bitmap picture) {
-        this.picture = picture;
+    public void SetPictureUri(Uri pictureUri) {
+        this.pictureUri = pictureUri;
     }
-    public Bitmap GetPicture() {
-        return this.picture;
+    public Uri GetPictureUri() {
+        return this.pictureUri;
     }
 
     // 추출된 문자열
-    public void SetOCR(String str) {
+    public void SetExtractedString(String str) {
         this.extractedString = str;
     }
-    public String GetOCR() {
+    public String GetExtractedString() {
         return this.extractedString;
     }
 }

@@ -7,6 +7,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -14,10 +16,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +32,15 @@ import android.widget.Toast;
 import com.example.spellingcheckwithocr.MainActivity;
 import com.example.spellingcheckwithocr.R;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class takePhoto extends Fragment {
 
-    private int CAMERA_PERMISSION_CODE = 0x00AF;
-
+    private Uri pictureUri;
     private ImageView imageView;
     private Button takePhotoBtn, extractStringBnt;
 
@@ -41,17 +49,17 @@ public class takePhoto extends Fragment {
             new ActivityResultContracts.RequestPermission(),
             new ActivityResultCallback<Boolean>() {
                 @Override
-                public void onActivityResult(Boolean result) {
-                    if (result) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        takePictureLauncher.launch(intent);
+                public void onActivityResult(Boolean permissionGranted) {
+                    if (permissionGranted) {
+                        TakePicture();
                     } else {
-                        Toast.makeText(getContext(), "카메라 사용을 허가 해주세요~", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(getContext(), "카메라 사용을 허가 해주세요~", Toast.LENGTH_LONG);
+                        toast.show();
                     }
                 }
             });
 
-    // 카메라 호출 후 결과 값을 어떻게 처리할 지. 이미지 뷰에 출력및 버튼 속성 변경
+    // 카메라 호출 후 결과 값을 어떻게 처리할 지. 이미지 뷰에 출력및 후처리
     private ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -59,14 +67,25 @@ public class takePhoto extends Fragment {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Bundle extras = result.getData().getExtras();
-                        Bitmap picture = (Bitmap) extras.get("data");
-                        ((MainActivity)getActivity()).SetPicture(picture);
-
-                        AfterTakePicture(picture);
+                        ((MainActivity)getActivity()).SetPictureUri(pictureUri);
+                        AfterTakePicture();
                     }
                 }
             });
+
+    // 사진이 있을 때 후처리
+    private void AfterTakePicture() {
+        // 촬영 이미지
+        imageView.setImageURI(pictureUri);
+
+        // 촬영 버튼
+        takePhotoBtn.setText("다시 찍기");
+        takePhotoBtn.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.yellow));
+
+        // 다음 탭 진행 버튼
+        extractStringBnt.setEnabled(true);
+        extractStringBnt.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.green));
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,10 +99,9 @@ public class takePhoto extends Fragment {
             @Override
             public void onClick(View view) {
                 if (NeedCameraPermission()) {
-                    requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    RequestCameraPermission();
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    takePictureLauncher.launch(intent);
+                    TakePicture();
                 }
             }
         });
@@ -98,32 +116,69 @@ public class takePhoto extends Fragment {
             }
         });
 
-        // 혹시 이미 사진을 찍었으면 그걸로 처리
-        Bitmap picture = ((MainActivity)getActivity()).GetPicture();
-        if (picture != null) {
-            AfterTakePicture(picture);
+        // 혹시 이미 사진을 찍었으면 다 필요없고 그걸로 처리
+        pictureUri = ((MainActivity)getActivity()).GetPictureUri();
+        if (pictureUri != null) {
+            AfterTakePicture();
         }
 
         return view;
     }
 
     // 카메라 권한 확인및 요청
+    @NonNull
     private Boolean NeedCameraPermission() {
-        int cameraPermissionState = ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.CAMERA);
+        int cameraPermissionState = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
         return cameraPermissionState != PackageManager.PERMISSION_GRANTED;
     }
 
-    // 사진이 있을 때 후처리
-    private void AfterTakePicture(Bitmap picture) {
-        // 촬영 이미지
-        imageView.setImageBitmap(picture);
+    private void RequestCameraPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+    }
 
-        // 촬영 버튼
-        takePhotoBtn.setText("다시 찍기");
-        takePhotoBtn.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.yellow));
+    // 사진 찍기. 찍은 사진 이미지 뷰에 출력
+    private void TakePicture() {
+        // 찍은 사진을 저장할 임시 사진 파일 생성및 URI 획득
+        File picture;
+        try {
+            picture = CreateTempPictureFile();
+        } catch (IOException ex) {
+            Toast toast = Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG);
+            toast.show();
+            return;
+        }
+        if (picture == null) {
+            Toast toast = Toast.makeText(getContext(), "임시 사진 파일 생성에 실패했어요ㅠㅠ", Toast.LENGTH_LONG);
+            toast.show();
+            return;
+        }
 
-        // 다음 탭 진행 버튼
-        extractStringBnt.setEnabled(true);
-        extractStringBnt.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.green));
+        pictureUri = FileProvider.getUriForFile(getContext(), "com.example.spellingcheckwithocr.fileprovider", picture);
+        
+        // 해당 URI에 사진을 저장하는 것으로 사진 촬영 시작
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+        takePictureLauncher.launch(takePictureIntent);
+    }
+    
+    // 임의 이름의 사진 파일 생성및 반환
+    @NonNull
+    private File CreateTempPictureFile() throws IOException {
+        // 해당 앱 전용 사진 저장 폴더
+        File[] storageDirs = ContextCompat.getExternalFilesDirs(getContext(), Environment.DIRECTORY_PICTURES);
+        if (storageDirs.length == 0) {
+            throw new IOException("there is no picture storageDir");
+        }
+        File storageDir = storageDirs[0];
+
+        // 임의의 파일 이름을 생성
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String pictureFileName = "JPEG_" + timeStamp + "_";
+
+        // 전용 사진 폴더에 임의 이름의 사진 파일 생성
+        File picture = File.createTempFile(pictureFileName, ".jpg", storageDir);
+
+        // 해당 사진 이미지 반환
+        return picture;
     }
 }
