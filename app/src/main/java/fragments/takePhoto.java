@@ -46,7 +46,9 @@ public class takePhoto extends Fragment {
         takePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkCameraPermission();
+                if (NeedPermission()) {
+                    return;
+                }
 
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 activityResultPicture.launch(intent);
@@ -73,10 +75,13 @@ public class takePhoto extends Fragment {
     }
 
     // 카메라 권한 확인및 요청
-    private void checkCameraPermission() {
+    private Boolean NeedPermission() {
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.getActivity(), new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            return true;
         }
+
+        return false;
     }
 
     // 카메라 호출 후 결과 값을 어떻게 처리할 지. 이미지 뷰에 출력및 버튼 속성 변경
