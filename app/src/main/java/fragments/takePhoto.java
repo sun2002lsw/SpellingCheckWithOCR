@@ -6,8 +6,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,7 +15,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -34,7 +31,6 @@ import com.example.spellingcheckwithocr.R;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -67,7 +63,6 @@ public class takePhoto extends Fragment {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        ((MainActivity)getActivity()).SetPictureUri(pictureUri);
                         AfterTakePicture();
                     }
                 }
@@ -117,8 +112,9 @@ public class takePhoto extends Fragment {
         });
 
         // 혹시 이미 사진을 찍었으면 다 필요없고 그걸로 처리
-        pictureUri = ((MainActivity)getActivity()).GetPictureUri();
-        if (pictureUri != null) {
+        File picture = ((MainActivity)getActivity()).GetPicture();
+        if (picture != null) {
+            pictureUri = helper.converter.FileToUri(getContext(), picture);
             AfterTakePicture();
         }
 
@@ -153,8 +149,8 @@ public class takePhoto extends Fragment {
             return;
         }
 
-        pictureUri = FileProvider.getUriForFile(getContext(), "com.example.spellingcheckwithocr.fileprovider", picture);
-        
+        pictureUri = helper.converter.FileToUri(getContext(), picture);
+
         // 해당 URI에 사진을 저장하는 것으로 사진 촬영 시작
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
@@ -171,6 +167,11 @@ public class takePhoto extends Fragment {
         }
         File storageDir = storageDirs[0];
 
+        // 일단 해당 폴더를 깔끔하게 청소
+        for(File file : storageDir.listFiles()) {
+            file.delete();
+        }
+
         // 임의의 파일 이름을 생성
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String pictureFileName = "JPEG_" + timeStamp + "_";
@@ -179,6 +180,7 @@ public class takePhoto extends Fragment {
         File picture = File.createTempFile(pictureFileName, ".jpg", storageDir);
 
         // 해당 사진 이미지 반환
+        ((MainActivity)getActivity()).SetPicture(picture);
         return picture;
     }
 }

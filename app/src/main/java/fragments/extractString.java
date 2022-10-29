@@ -1,11 +1,11 @@
 package fragments;
 
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.spellingcheckwithocr.MainActivity;
 import com.example.spellingcheckwithocr.R;
@@ -32,18 +31,19 @@ public class extractString extends Fragment {
     private TessBaseAPI tessAPI;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_extract_string, container, false);
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
-        Uri pictureUri = ((MainActivity)getActivity()).GetPictureUri();
-        if (pictureUri == null) {
+        File picture = ((MainActivity)getActivity()).GetPicture();
+        if (picture == null) {
             ((MainActivity)getActivity()).EnableTab(0);
             return view;
         }
 
         // 찍어둔 사진 출력
         ImageView imageView = view.findViewById(R.id.picture2);
+        Uri pictureUri = helper.converter.FileToUri(getContext(), picture);
         imageView.setImageURI(pictureUri);
 
         // OCR
@@ -65,7 +65,7 @@ public class extractString extends Fragment {
         tessAPI.init(dataPath, "eng");
     }
 
-    private void CheckFile(File dir) {
+    private void CheckFile(@NonNull File dir) {
         //디렉토리가 없으면 디렉토리를 만들고 그후에 파일을 카피
         if(!dir.exists() && dir.mkdirs()) {
             CopyFiles();
@@ -105,11 +105,10 @@ public class extractString extends Fragment {
         }
     }
 
-    public void ProcessOCR(View view) {
-        Uri pictureUri = ((MainActivity)getActivity()).GetPictureUri();
-        File pictureFile = new File(pictureUri.getPath());
+    public void ProcessOCR(@NonNull View view) {
+        File picture = ((MainActivity)getActivity()).GetPicture();
 
-        tessAPI.setImage(pictureFile);
+        tessAPI.setImage(picture);
         String extractedString = tessAPI.getUTF8Text();
         ((MainActivity)getActivity()).SetExtractedString(extractedString);
 

@@ -11,13 +11,15 @@ import android.view.Menu;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ViewPagerAdapter viewPagerAdapter;
 
-    private Uri pictureUri;
+    private File picture;
     private String extractedString;
 
     @Override
@@ -97,11 +99,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 촬영한 사진
-    public void SetPictureUri(Uri pictureUri) {
-        this.pictureUri = pictureUri;
+    public void SetPicture(File picture) {
+        this.picture = picture;
     }
-    public Uri GetPictureUri() {
-        return this.pictureUri;
+    public File GetPicture() {
+        return this.picture;
     }
 
     // 추출된 문자열
