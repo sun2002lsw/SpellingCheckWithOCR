@@ -8,6 +8,7 @@
     <string name="extractStringTab">2. 글자 읽기</string>
     <string name="checkSpellingTab">3. 맞춤법 검사</string>
     <string name="takePhoto">사진 찍기</string>
+    <string name="takePhotoAgain">다시 찍기</string>
     <string name="extractString">글자 읽기</string>
     <string name="photoImageViewDesc">촬영한 사진 출력</string>
 </resources>

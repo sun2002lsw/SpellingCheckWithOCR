@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.spellingcheckwithocr.MainActivity;
 import com.example.spellingcheckwithocr.R;
@@ -37,6 +38,9 @@ public class extractString extends Fragment {
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         File picture = ((MainActivity)getActivity()).GetPicture();
         if (picture == null) {
+            Toast toast = Toast.makeText(getContext(), "사진이 없어요~", Toast.LENGTH_LONG);
+            toast.show();
+            
             ((MainActivity)getActivity()).EnableTab(0);
             return view;
         }
@@ -46,7 +50,7 @@ public class extractString extends Fragment {
         Uri pictureUri = helper.converter.FileToUri(getContext(), picture);
         imageView.setImageURI(pictureUri);
 
-        // OCR
+        // OCR 이거 비동기 처리하자
         InitTess();
         ProcessOCR(view);
 
