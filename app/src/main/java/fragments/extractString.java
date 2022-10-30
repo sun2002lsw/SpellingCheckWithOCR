@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +56,14 @@ public class extractString extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            
             util.MainActivity(extractString.this).SetExtractedString(extractedString);
-            editText.setText(extractedString);
+
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                String stringForTextView = extractedString;
+                activity.runOnUiThread(() -> editText.setText(stringForTextView));
+            }
         }).start();
 
         return view;

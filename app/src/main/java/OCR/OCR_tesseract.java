@@ -6,40 +6,15 @@ public class OCR_tesseract extends OcrEngineBase {
 
     @Override
     void Init() throws InterruptedException {
-        PrintProgress(10);
-        Thread.sleep(1000);
-        PrintProgress(20);
-        Thread.sleep(1000);
-        PrintProgress(30);
-        Thread.sleep(1000);
-        PrintProgress(40);
-        Thread.sleep(1000);
-        PrintProgress(50);
-        Thread.sleep(1000);
-        PrintProgress(60);
-        Thread.sleep(1000);
-        PrintProgress(70);
-        Thread.sleep(1000);
+        for (int i = 0; i <= 100; i++) {
+            PrintProgress(i);
+            Thread.sleep(50);
+        }
     }
 
     @Override
     String OCR(File picture) throws InterruptedException {
-        PrintProgress(10);
-        Thread.sleep(1000);
-        PrintProgress(20);
-        Thread.sleep(1000);
-        PrintProgress(30);
-        Thread.sleep(1000);
-        PrintProgress(40);
-        Thread.sleep(1000);
-        PrintProgress(50);
-        Thread.sleep(1000);
-        PrintProgress(60);
-        Thread.sleep(1000);
-        PrintProgress(70);
-        Thread.sleep(1000);
-
-        return null;
+        return "오, 뭔가 엄청나게 긴 문자열이 출력되었다능... 잠도 안 자고 미친거 아니냐능 시발 이건 아닌데 좆됐다;;;";
     }
 }
 

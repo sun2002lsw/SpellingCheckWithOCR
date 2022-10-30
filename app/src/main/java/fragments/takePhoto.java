@@ -178,7 +178,7 @@ public class takePhoto extends Fragment {
 
         // 일단 해당 폴더를 깔끔하게 청소
         File[] files = storageDir.listFiles();
-        for(File file : files) {
+        for(File file : files != null ? files : new File[0]) {
             file.delete();
         }
 

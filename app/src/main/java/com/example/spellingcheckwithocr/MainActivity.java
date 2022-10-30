@@ -20,9 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
 
     private File picture;
-    private String extractedString;
-
     private OcrEngine ocrEngine;
+    private String extractedString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
