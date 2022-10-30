@@ -3,15 +3,15 @@ package com.example.spellingcheckwithocr;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
+
+import OCR.OCR_tesseract;
+import OCR.OcrEngine;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private File picture;
     private String extractedString;
+
+    private OcrEngine ocrEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,16 @@ public class MainActivity extends AppCompatActivity {
 
         // 상단 탭. 일단 다른 2개 탭은 비활성화
         tabLayout = findViewById(R.id.tabLayout);
-        tabLayout.getTabAt(1).view.setClickable(false);
-        tabLayout.getTabAt(2).view.setClickable(false);
-        
+        TabLayout.Tab secondTab = tabLayout.getTabAt(1);
+        TabLayout.Tab thirdTab = tabLayout.getTabAt(1);
+
+        if (secondTab != null) {
+            secondTab.view.setClickable(false);
+        }
+        if (thirdTab != null) {
+            thirdTab.view.setClickable(false);
+        }
+
         // 탭 아래의 프레그먼트 화면
         viewPager = findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(this);
@@ -59,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         // 탭을 스와이프 했을 때
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -72,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        
+        // todo. 이거나중에 고를 수 있게 바꾸자
+        SetOcrEngine(new OCR_tesseract());
     }
 
     @Override
@@ -106,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
         return this.picture;
     }
 
+    // OCR
+    public void SetOcrEngine(OcrEngine ocrEngine) {
+        this.ocrEngine = ocrEngine;
+    }
+    public OcrEngine GetOcrEngine() {
+        return this.ocrEngine;
+    }
+    
     // 추출된 문자열
     public void SetExtractedString(String str) {
         this.extractedString = str;

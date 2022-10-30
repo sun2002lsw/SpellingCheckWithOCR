@@ -32,15 +32,27 @@
             android:background="@drawable/bg_edit_text"
             android:ems="10"
             android:gravity="top"
-            android:hint="@string/extractString"
             android:inputType="textMultiLine"
             android:maxLines="5"
             android:minHeight="48dp"
-            android:scrollbars="vertical"
             android:scrollbarSize="20dp"
+            android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/extractedString"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/extractedString" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
