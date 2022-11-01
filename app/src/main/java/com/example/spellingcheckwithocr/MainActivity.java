@@ -113,21 +113,15 @@ public class MainActivity extends AppCompatActivity {
         this.picture = picture;
     }
     public File GetPicture() {
-        return this.picture;
+        return picture;
     }
 
     // OCR
-    public void SetOcrEngine(OcrEngine ocrEngine) {
-        this.ocrEngine = ocrEngine;
-    }
-    public OcrEngine GetOcrEngine() {
-        return this.ocrEngine;
-    }
+    public void SetOcrEngine(OcrEngine ocrEngine) { this.ocrEngine = ocrEngine; }
+    public OcrEngine GetOcrEngine() { return ocrEngine; }
     
     // 추출된 문자열
-    public void SetExtractedString(String str) {
-        this.extractedString = str;
-    }
+    public void SetExtractedString(String str) { this.extractedString = str; }
     public String GetExtractedString() {
         return this.extractedString;
     }

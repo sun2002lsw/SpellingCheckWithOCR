@@ -1,5 +1,8 @@
 package fragments;
 
+import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -9,6 +12,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -19,6 +24,7 @@ import com.example.spellingcheckwithocr.R;
 import java.io.File;
 
 import OCR.OcrEngine;
+import OCR.OcrProgressListener;
 import helper.util;
 
 public class extractString extends Fragment {
@@ -42,23 +48,38 @@ public class extractString extends Fragment {
         Uri pictureUri = util.FileToUri(getContext(), picture);
         imageView.setImageURI(pictureUri);
 
+        // 문자열 출력 구간 설정
+        EditText editText = view.findViewById(R.id.extractedString);
+        editText.setText("");
+
         // OCR 진행에 따른 시각화 처리
-        ProgressBar progressBar = view.findViewById(R.id.progressBar);
         OcrEngine ocrEngine = helper.util.MainActivity(this).GetOcrEngine();
-        ocrEngine.SetProgressListener(progressBar::setProgress);
+        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        ocrEngine.SetProgressListener(new OcrProgressListener() {
+            @Override
+            public void onProgress(int from, int to) {
+                FragmentActivity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", from, to);
+                            animation.setDuration(3000); // 3 second
+                            animation.setInterpolator(new LinearInterpolator());
+                            animation.start();
+                        }
+                    });
+                }
+            }
+        });
 
         // OCR 비동기로 진행
-        EditText editText = view.findViewById(R.id.extractedString);
         new Thread(() -> {
-            String extractedString = null;
-            try {
-                extractedString = ocrEngine.ProcessOCR(picture);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            
+            ocrEngine.Init(getContext(), "kor");
+            String extractedString = ocrEngine.ProcessOCR(picture);
             util.MainActivity(extractString.this).SetExtractedString(extractedString);
 
+            // 문자열 화면에 출력
             FragmentActivity activity = getActivity();
             if (activity != null) {
                 String stringForTextView = extractedString;

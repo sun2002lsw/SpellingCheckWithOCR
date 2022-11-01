@@ -1,5 +1,5 @@
 package OCR;
 
 public interface OcrProgressListener {
-    void onProgress(int progress);
+    void onProgress(int from, int to);
 }

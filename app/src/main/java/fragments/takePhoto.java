@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,7 +180,9 @@ public class takePhoto extends Fragment {
         // 일단 해당 폴더를 깔끔하게 청소
         File[] files = storageDir.listFiles();
         for(File file : files != null ? files : new File[0]) {
-            file.delete();
+            if (!file.delete()) {
+                Log.d("warning", "기존 사진 파일 삭제를 실패했습니다");
+            }
         }
 
         // 임의의 파일 이름을 생성

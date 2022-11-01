@@ -1,10 +1,17 @@
 package OCR;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+
+import androidx.annotation.NonNull;
+
 import java.io.File;
 
 public interface OcrEngine {
     void SetProgressListener(OcrProgressListener l);
-    String ProcessOCR(File picture) throws InterruptedException;
+    void Init(@NonNull Context ctx, String languageCode);
+    String ProcessOCR(File picture);
+    String ProcessOCR(Bitmap picture);
 }
 
 abstract class OcrEngineBase implements OcrEngine {
@@ -16,19 +23,9 @@ abstract class OcrEngineBase implements OcrEngine {
         progressListener = l;
     }
 
-    protected final void PrintProgress(int progress) {
+    protected final void PrintProgress(int from, int to) {
         if (progressListener != null) {
-            progressListener.onProgress(progress);
+            progressListener.onProgress(from, to);
         }
     }
-
-    @Override
-    public final String ProcessOCR(File picture) throws InterruptedException {
-        Init();
-
-        return OCR(picture);
-    }
-
-    abstract void Init() throws InterruptedException;
-    abstract String OCR(File picture) throws InterruptedException;
 }
