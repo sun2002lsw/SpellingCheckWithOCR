@@ -48,7 +48,7 @@ public class takePhoto extends Fragment {
                 if (permissionGranted) {
                     TakePicture();
                 } else {
-                    Toast toast = Toast.makeText(getContext(), "카메라 사용을 허가 해주세요~", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getContext(), "카메라 사용을 허가 해주세요", Toast.LENGTH_SHORT);
                     toast.show();
                 }
             });

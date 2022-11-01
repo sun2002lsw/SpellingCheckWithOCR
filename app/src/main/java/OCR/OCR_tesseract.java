@@ -1,7 +1,6 @@
 package OCR;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
@@ -12,11 +11,11 @@ import java.io.File;
 public class OCR_tesseract extends OcrEngineBase {
 
     private Boolean initialized = false;
-    private TessBaseAPI tessAPI = new TessBaseAPI();
+    private final TessBaseAPI tessAPI = new TessBaseAPI();
 
     @Override
     public void Init(@NonNull Context ctx, String languageCode) {
-        PrintProgress(0, 50);
+        PrintProgress(0, 20);
         if (initialized) {
             return;
         }
@@ -48,17 +47,13 @@ public class OCR_tesseract extends OcrEngineBase {
 
     @Override
     public String ProcessOCR(File picture) {
-        PrintProgress(50, 100);
-
+        PrintProgress(20, 50);
         tessAPI.setImage(picture);
-        return tessAPI.getUTF8Text();
-    }
 
-    @Override
-    public String ProcessOCR(Bitmap picture) {
-        PrintProgress(50, 100);
+        PrintProgress(50, 90);
+        String text = tessAPI.getUTF8Text();
 
-        tessAPI.setImage(picture);
-        return tessAPI.getUTF8Text();
+        PrintProgress(100, 100);
+        return text;
     }
 }

@@ -11,7 +11,6 @@ public interface OcrEngine {
     void SetProgressListener(OcrProgressListener l);
     void Init(@NonNull Context ctx, String languageCode);
     String ProcessOCR(File picture);
-    String ProcessOCR(Bitmap picture);
 }
 
 abstract class OcrEngineBase implements OcrEngine {
