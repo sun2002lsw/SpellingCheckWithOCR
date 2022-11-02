@@ -93,7 +93,7 @@ public class takePhoto extends Fragment {
         // 첫 사진 찍기 버튼. 카메라 권한이 없으면 권한 요청 & 카메라 촬영, 아니면 그냥 바로 촬영
         takePhotoBtn = view.findViewById(R.id.takePhoto);
         takePhotoBtn.setBackgroundColor(Color.GREEN);
-        takePhotoBtn.setOnClickListener(view1 -> {
+        takePhotoBtn.setOnClickListener(v -> {
             if (NeedCameraPermission()) {
                 RequestCameraPermission();
             } else {
@@ -104,7 +104,7 @@ public class takePhoto extends Fragment {
         // 사진 다시 찍기 버튼. 처음에는 비활성화하고 AfterTakePicture 이후 활성화. 작업은 위와 같음
         takePhotoAgainBtn = view.findViewById(R.id.takePhotoAgain);
         takePhotoAgainBtn.setEnabled(false);
-        takePhotoAgainBtn.setOnClickListener(view12 -> {
+        takePhotoAgainBtn.setOnClickListener(v -> {
             if (NeedCameraPermission()) {
                 RequestCameraPermission();
             } else {

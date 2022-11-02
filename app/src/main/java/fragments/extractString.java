@@ -2,12 +2,14 @@ package fragments;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,8 +20,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.spellingcheckwithocr.R;
+import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import OCR.OcrEngine;
 import helper.util;
@@ -29,6 +33,24 @@ public class extractString extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_extract_string, container, false);
+
+        FragmentActivity activity = getActivity();
+        if (activity == null) {
+            return view;
+        }
+
+        Context ctx = getContext();
+        if (ctx == null) {
+            return view;
+        }
+
+        Button checkSpelling = view.findViewById(R.id.checkSpelling);
+        checkSpelling.setBackgroundColor(Color.GRAY);
+        checkSpelling.setEnabled(false);
+
+        EditText editText = view.findViewById(R.id.extractedString);
+
+        AtomicBoolean ocrComplete = new AtomicBoolean();
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         File picture = helper.util.MainActivity(this).GetPicture();
@@ -46,37 +68,26 @@ public class extractString extends Fragment {
         imageView.setImageURI(pictureUri);
 
         // OCR 진행에 따른 시각화 처리
-        OcrEngine ocrEngine = helper.util.MainActivity(this).GetOcrEngine();
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
-        ocrEngine.SetProgressListener((from, to) -> {
-            FragmentActivity activity = getActivity();
-            if (activity != null) {
-                activity.runOnUiThread(() -> {
-                    ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", from, to);
-                    animation.setDuration(30000);
-                    animation.setInterpolator(new LinearInterpolator());
-                    animation.start();
-                });
-            }
-        });
+        TessBaseAPI.ProgressNotifier ocrProgressNotifier = progress -> progressBar.setProgress(progress.getPercent());
 
         // OCR 비동기로 진행
-        EditText editText = view.findViewById(R.id.extractedString);
+        OcrEngine ocrEngine = helper.util.MainActivity(this).GetOcrEngine();
         new Thread(() -> {
-            Context ctx = getContext();
-            if (ctx == null) {
-                return;
-            }
+            activity.runOnUiThread(() -> editText.getText().clear());
 
-            ocrEngine.Init(ctx, "eng");
+            // OCR
+            ocrEngine.Init(ctx, "eng", ocrProgressNotifier);
             String extractedString = ocrEngine.ProcessOCR(picture);
-            util.MainActivity(extractString.this).SetExtractedString(extractedString);
+            ocrComplete.set(true);
 
-            // 문자열 화면에 출력
-            FragmentActivity activity = getActivity();
-            if (activity != null) {
-                activity.runOnUiThread(() -> editText.setText(extractedString));
-            }
+            // 후처리
+            util.MainActivity(extractString.this).SetExtractedString(extractedString);
+            activity.runOnUiThread(() -> {
+                editText.setText(extractedString);
+                checkSpelling.setBackgroundColor(Color.GREEN);
+                checkSpelling.setEnabled(true);
+            });
         }).start();
 
         return view;

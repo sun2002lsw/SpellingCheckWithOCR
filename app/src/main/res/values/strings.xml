@@ -11,4 +11,5 @@
     <string name="takePhotoAgain">다시 찍기</string>
     <string name="extractString">글자 읽기</string>
     <string name="photoImageViewDesc">촬영한 사진 출력</string>
+    <string name="checkSpelling">맞춤법 검사</string>
 </resources>
