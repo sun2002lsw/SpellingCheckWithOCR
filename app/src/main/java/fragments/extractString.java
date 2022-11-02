@@ -122,7 +122,16 @@ public class extractString extends Fragment {
             ocrBtn.setText("맞춤법 검사하기");
             ocrBtn.setTextColor(Color.BLACK);
             ocrBtn.setBackgroundColor(Color.GREEN);
-            ocrBtn.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
+            ocrBtn.setOnClickListener(v -> {
+                String check = util.MainActivity(extractString.this).GetExtractedString();
+                if (check.isEmpty()) {
+                    Toast.makeText(getContext(), "앗! 사진을 다시 찍었네요", Toast.LENGTH_SHORT).show();
+                    util.MainActivity(extractString.this).EnableTab(1);
+                    return;
+                }
+
+                util.MainActivity(extractString.this).EnableTab(2);
+            });
 
             progressBar.setProgress(100);
         });

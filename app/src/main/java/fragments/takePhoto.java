@@ -57,11 +57,13 @@ public class takePhoto extends Fragment {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
+                    // 사진을 새로 찍은 시점에서 문자열 다시 추출 해야 함
+                    util.MainActivity(takePhoto.this).SetExtractedString("");
                     AfterTakePicture();
                 }
             });
 
-    // 사진이 있을 때 후처리
+    // 사진을 찍은 후 처리
     private void AfterTakePicture() {
         // 촬영 이미지
         imageView.setImageURI(pictureUri);
@@ -119,7 +121,6 @@ public class takePhoto extends Fragment {
         extractStringBnt = view.findViewById(R.id.extractString);
         extractStringBnt.setEnabled(false);
         extractStringBnt.setOnClickListener(v -> {
-            util.MainActivity(takePhoto.this).SetExtractedString("");
             util.MainActivity(takePhoto.this).EnableTab(1);
         });
 
@@ -128,6 +129,13 @@ public class takePhoto extends Fragment {
         if (picture != null) {
             pictureUri = util.FileToUri(getContext(), picture);
             AfterTakePicture();
+        } else {
+            // 아직 아무 사진도 안 찍었으면, 이참에 폴더 정리
+            try {
+                DeleteAllPictureFiles();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return view;
@@ -182,14 +190,6 @@ public class takePhoto extends Fragment {
         }
         File storageDir = storageDirs[0];
 
-        // 일단 해당 폴더를 깔끔하게 청소
-        File[] files = storageDir.listFiles();
-        for(File file : files != null ? files : new File[0]) {
-            if (!file.delete()) {
-                Log.d("warning", "기존 사진 파일 삭제를 실패했습니다");
-            }
-        }
-
         // 임의의 파일 이름을 생성
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA).format(new Date());
         String pictureFileName = "JPEG_" + timeStamp + "_";
@@ -200,5 +200,28 @@ public class takePhoto extends Fragment {
         // 해당 사진 이미지 반환
         util.MainActivity(this).SetPicture(picture);
         return picture;
+    }
+
+    // 임의 이름의 사진 파일 생성및 반환
+    private void DeleteAllPictureFiles() throws IOException {
+        Context ctx = getContext();
+        if (ctx == null) {
+            throw new IOException("getContext() is null");
+        }
+
+        // 해당 앱 전용 사진 저장 폴더
+        File[] storageDirs = ContextCompat.getExternalFilesDirs(ctx, Environment.DIRECTORY_PICTURES);
+        if (storageDirs.length == 0) {
+            throw new IOException("there is no picture storageDir");
+        }
+        File storageDir = storageDirs[0];
+
+        // 일단 해당 폴더를 깔끔하게 청소
+        File[] files = storageDir.listFiles();
+        for(File file : files != null ? files : new File[0]) {
+            if (!file.delete()) {
+                Log.d("warning", "기존 사진 파일 삭제를 실패했습니다");
+            }
+        }
     }
 }
