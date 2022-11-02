@@ -1,7 +1,6 @@
 package OCR;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 

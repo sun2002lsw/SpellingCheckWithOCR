@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // 상단 탭. 일단 다른 2개 탭은 비활성화
         tabLayout = findViewById(R.id.tabLayout);
         TabLayout.Tab secondTab = tabLayout.getTabAt(1);
-        TabLayout.Tab thirdTab = tabLayout.getTabAt(1);
+        TabLayout.Tab thirdTab = tabLayout.getTabAt(2);
 
         if (secondTab != null) {
             secondTab.view.setClickable(false);
@@ -92,9 +92,17 @@ public class MainActivity extends AppCompatActivity {
 
     // 해당 탭까지 활성화
     public void EnableTab(int position) {
-        TabLayout.Tab tab = tabLayout.getTabAt(position);
-        if (tab != null) {
-            tab.view.setClickable(true);
+        for (int i = 0; i <= position; i ++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.view.setClickable(true);
+            }
+        }
+        for (int i = position + 1; i < 3; i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.view.setClickable(false);
+            }
         }
 
         viewPagerAdapter.setItemCount(position + 1);

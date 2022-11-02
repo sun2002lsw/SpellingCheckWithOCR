@@ -53,7 +53,7 @@ public class extractString extends Fragment {
             if (activity != null) {
                 activity.runOnUiThread(() -> {
                     ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", from, to);
-                    animation.setDuration(3000);
+                    animation.setDuration(30000);
                     animation.setInterpolator(new LinearInterpolator());
                     animation.start();
                 });
@@ -68,7 +68,7 @@ public class extractString extends Fragment {
                 return;
             }
 
-            ocrEngine.Init(ctx, "kor");
+            ocrEngine.Init(ctx, "eng");
             String extractedString = ocrEngine.ProcessOCR(picture);
             util.MainActivity(extractString.this).SetExtractedString(extractedString);
 
