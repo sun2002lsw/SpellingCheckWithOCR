@@ -11,7 +11,8 @@
     <string name="takePhotoAgain">다시 찍기</string>
     <string name="extractString">글자 읽기</string>
     <string name="photoImageViewDesc">촬영한 사진 출력</string>
-    <string name="checkSpelling">맞춤법 검사</string>
+    <string name="stopOCR">중단하기</string>
+    <string name="checkSpelling">맞춤법 검사하기</string>
     <string name="kor">한글</string>
     <string name="eng">영어</string>
     <string name="infoTitle">이 남자는 무료로 해줍니다!</string>

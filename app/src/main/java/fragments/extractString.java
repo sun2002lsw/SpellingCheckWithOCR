@@ -21,7 +21,6 @@ import com.example.spellingcheckwithocr.R;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import OCR.OCR_tesseract;
 import helper.util;
@@ -41,14 +40,6 @@ public class extractString extends Fragment {
         if (ctx == null) {
             return view;
         }
-
-        Button checkSpelling = view.findViewById(R.id.checkSpelling);
-        checkSpelling.setBackgroundColor(Color.GRAY);
-        checkSpelling.setEnabled(false);
-
-        EditText editText = view.findViewById(R.id.extractedString);
-
-        AtomicBoolean ocrComplete = new AtomicBoolean();
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         File picture = util.MainActivity(this).GetPicture();
@@ -72,21 +63,33 @@ public class extractString extends Fragment {
         OCR_tesseract ocrEngine = util.MainActivity(this).GetOcrEngine();
         ocrEngine.SetProgressNotifier(pn);
 
+        // OCR 중단에 따른 처리
+        Button stopOCR = view.findViewById(R.id.stopOCR);
+        stopOCR.setOnClickListener(v -> ocrEngine.StopOCR());
+
         // OCR 비동기로 진행
+        EditText editText = view.findViewById(R.id.extractedString);
+        Button checkSpelling = view.findViewById(R.id.checkSpelling);
+
         new Thread(() -> {
             activity.runOnUiThread(() -> editText.getText().clear());
 
             // OCR
             String extractedString = ocrEngine.ProcessOCR(picture);
-            ocrComplete.set(true);
 
             // 후처리
             util.MainActivity(extractString.this).SetExtractedString(extractedString);
             activity.runOnUiThread(() -> {
-                progressBar.setProgress(100);
                 editText.setText(extractedString);
-                checkSpelling.setBackgroundColor(Color.GREEN);
+
+                stopOCR.setEnabled(false);
+                stopOCR.setTextColor(Color.TRANSPARENT);
+                stopOCR.setBackgroundColor(Color.TRANSPARENT);
+
                 checkSpelling.setEnabled(true);
+                checkSpelling.setBackgroundColor(Color.GREEN);
+
+                progressBar.setProgress(100);
             });
         }).start();
 

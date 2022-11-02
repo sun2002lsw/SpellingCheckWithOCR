@@ -59,4 +59,10 @@ public class OCR_tesseract {
 
         return util.ConvertHocrToText(hocrText);
     }
+
+    public void StopOCR() {
+        if (tessAPI != null) {
+            tessAPI.stop();
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private File picture;
     private OCR_tesseract tesseract;
-    private String languageCode = "kor";
+    private String ocrLanguage = "kor";
     private String menuSelectLang;
     private String extractedString;
 
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 대망의 OCR 엔진
         tesseract = new OCR_tesseract();
-        tesseract.SetLanguageCode(MainActivity.this, languageCode);
+        tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
     }
 
     @Override
@@ -128,15 +128,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.setPositiveButton("선택", (dialog, which) -> {
-            languageCode = util.KoreanToLanguageCode(menuSelectLang);
-            tesseract.SetLanguageCode(MainActivity.this, languageCode);
+            ocrLanguage = util.KoreanToLanguageCode(menuSelectLang);
+            tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
 
-            String text = util.LanguageCodeToKorean(languageCode) + " 읽기로 설정 되었습니다";
+            String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기로 설정 되었습니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         });
 
         builder.setNegativeButton("취소", (dialog, which) -> {
-            String text = util.LanguageCodeToKorean(languageCode) + " 읽기가 유지 됩니다";
+            String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기가 유지 됩니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         });
 
@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // OCR
+    public String GetOcrLanguage() { return ocrLanguage; }
     public OCR_tesseract GetOcrEngine() { return tesseract; }
     
     // 추출된 문자열

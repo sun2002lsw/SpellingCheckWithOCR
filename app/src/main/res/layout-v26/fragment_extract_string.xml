@@ -71,6 +71,19 @@
             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
         <Button
+            android:id="@+id/stopOCR"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/stopOCR"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
             android:id="@+id/checkSpelling"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -78,9 +91,10 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:autoSizeTextType="uniform"
-            android:backgroundTint="@color/green"
             android:text="@string/checkSpelling"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
