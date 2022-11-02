@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.spellingcheckwithocr.MainActivity;
 
+import org.jetbrains.annotations.Contract;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -31,10 +32,51 @@ public class util {
         return FileProvider.getUriForFile(ctx, "com.example.spellingcheckwithocr.fileprovider", file);
     }
 
-    static public MainActivity MainActivity(Fragment fragment) {
+    static public MainActivity MainActivity(@NonNull Fragment fragment) {
         return (MainActivity)fragment.getActivity();
     }
 
+    @NonNull
+    @Contract(pure = true)
+    static public String LanguageCodeToKorean(@NonNull String languageCode) {
+        switch (languageCode) {
+            case "kor":
+                return "한글";
+            case "eng":
+                return "영어";
+            default:
+                return "외계어";
+        }
+    }
+
+    @NonNull
+    @Contract(pure = true)
+    static public String KoreanToLanguageCode(@NonNull String korean) {
+        switch (korean) {
+            case "한글":
+                return "kor";
+            case "영어":
+                return "eng";
+            default:
+                return "WTF";
+        }
+    }
+
+    @NonNull
+    @Contract(pure = true)
+    static public String LevelToKorean(int level) {
+        switch (level) {
+            case 0:
+                return "낮음";
+            case 1:
+                return "보통";
+            case 2:
+                return "높음";
+            default:
+                return "짱쎔";
+        }
+    }
+    
     static public void CopyAsset(@NonNull Context ctx, String assetPath, String copyPath) {
         try{
             // 원본 asset 위치
@@ -61,6 +103,7 @@ public class util {
         }
     }
 
+    @NonNull
     static public String ConvertHocrToText(String Hocr) {
         Document xml = null;
         try {
@@ -84,6 +127,7 @@ public class util {
         return builder.parse(is);
     }
 
+    @NonNull
     private static String extractStringFromNodeList(@NonNull NodeList childList) {
         StringBuilder sb = new StringBuilder();
 

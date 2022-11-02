@@ -23,7 +23,7 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import OCR.OcrEngine;
+import OCR.OCR_tesseract;
 import helper.util;
 
 public class extractString extends Fragment {
@@ -67,15 +67,16 @@ public class extractString extends Fragment {
 
         // OCR 진행에 따른 시각화 처리
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
-        TessBaseAPI.ProgressNotifier ocrProgressNotifier = progress -> progressBar.setProgress(progress.getPercent());
+        TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
+
+        OCR_tesseract ocrEngine = util.MainActivity(this).GetOcrEngine();
+        ocrEngine.SetProgressNotifier(pn);
 
         // OCR 비동기로 진행
-        OcrEngine ocrEngine = util.MainActivity(this).GetOcrEngine();
         new Thread(() -> {
             activity.runOnUiThread(() -> editText.getText().clear());
 
             // OCR
-            ocrEngine.Init(ctx, "eng", ocrProgressNotifier);
             String extractedString = ocrEngine.ProcessOCR(picture);
             ocrComplete.set(true);
 

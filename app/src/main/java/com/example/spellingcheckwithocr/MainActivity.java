@@ -1,17 +1,22 @@
 package com.example.spellingcheckwithocr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 
 import OCR.OCR_tesseract;
-import OCR.OcrEngine;
+import helper.util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
 
     private File picture;
-    private OcrEngine ocrEngine;
+    private OCR_tesseract tesseract;
+    private String languageCode = "kor";
+    private String menuSelectLang;
     private String extractedString;
 
     @Override
@@ -79,15 +86,62 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        
-        // todo. 이거나중에 고를 수 있게 바꾸자
-        SetOcrEngine(new OCR_tesseract());
+
+        // 대망의 OCR 엔진
+        tesseract = new OCR_tesseract();
+        tesseract.SetLanguageCode(MainActivity.this, languageCode);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.setting) {
+            showOptionMenu();
+        } else if (itemId == R.id.info) {
+            showInfoMenu();
+        } else {
+            Toast.makeText(MainActivity.this, "무슨 메뉴를 누른거지?", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showOptionMenu() {
+        final String[] languages = { "한글", "영어" };
+        menuSelectLang = languages[0];
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("어떤 글자를 읽을지 선택해주세요");
+        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> {
+            menuSelectLang = languages[which];
+            String text = menuSelectLang + "의 인식률은 [" + util.LevelToKorean(which) + "]입니다";
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setPositiveButton("선택", (dialog, which) -> {
+            languageCode = util.KoreanToLanguageCode(menuSelectLang);
+            tesseract.SetLanguageCode(MainActivity.this, languageCode);
+
+            String text = util.LanguageCodeToKorean(languageCode) + " 읽기로 설정 되었습니다";
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("취소", (dialog, which) -> {
+            String text = util.LanguageCodeToKorean(languageCode) + " 읽기가 유지 됩니다";
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        });
+
+        builder.show();
+    }
+
+    private void showInfoMenu() {
+
     }
 
     // 해당 탭까지 활성화
@@ -125,8 +179,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // OCR
-    public void SetOcrEngine(OcrEngine ocrEngine) { this.ocrEngine = ocrEngine; }
-    public OcrEngine GetOcrEngine() { return ocrEngine; }
+    public OCR_tesseract GetOcrEngine() { return tesseract; }
     
     // 추출된 문자열
     public void SetExtractedString(String str) { this.extractedString = str; }

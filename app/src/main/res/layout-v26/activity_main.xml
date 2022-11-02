@@ -26,6 +26,7 @@
                     android:id="@+id/appTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:layout_marginStart="20dp"
                     android:autoSizeTextType="uniform"
                     android:gravity="center_vertical"
                     android:text="@string/appTitle"

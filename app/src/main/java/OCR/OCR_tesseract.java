@@ -10,12 +10,16 @@ import java.io.File;
 
 import helper.util;
 
-public class OCR_tesseract implements OcrEngine {
+public class OCR_tesseract {
 
+    private String dataPath;
+    private String languageCode;
     private TessBaseAPI tessAPI;
 
-    @Override
-    public void Init(@NonNull Context ctx, String languageCode, TessBaseAPI.ProgressNotifier pn) {
+    public void SetLanguageCode(@NonNull Context ctx, String languageCode) {
+        this.dataPath = ctx.getFilesDir().getAbsolutePath();
+        this.languageCode = languageCode;
+        
         // 데이터 가져오기
         String dataDirPath = ctx.getFilesDir() + "/tessdata/";
         String dataFilePath = dataDirPath + languageCode + ".traineddata";
@@ -30,14 +34,26 @@ public class OCR_tesseract implements OcrEngine {
             String assetPath = "tessdata/" + languageCode + ".traineddata";
             util.CopyAsset(ctx, assetPath, dataFilePath);
         }
+    }
+    
+    public void SetProgressNotifier(TessBaseAPI.ProgressNotifier pn) {
+        if (dataPath.isEmpty() || languageCode.isEmpty()) {
+            return;
+        }
 
-        //Tesseract API 세팅
         tessAPI = new TessBaseAPI(pn);
-        tessAPI.init(ctx.getFilesDir().getAbsolutePath(), languageCode);
+        tessAPI.init(dataPath, languageCode);
     }
 
-    @Override
     public String ProcessOCR(File picture) {
+        if (tessAPI == null)
+            if (dataPath.isEmpty() || languageCode.isEmpty()) {
+                return "어떤 언어로 할지 선택을 먼저 해주세요";
+            } else {
+                tessAPI = new TessBaseAPI();
+                tessAPI.init(dataPath, languageCode);
+            }
+        
         tessAPI.setImage(picture);
         String hocrText = tessAPI.getHOCRText(0);
 
