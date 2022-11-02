@@ -45,16 +45,17 @@ public class OCR_tesseract {
         tessAPI.init(dataPath, languageCode);
     }
 
-    public String ProcessOCR(File picture) {
+    public String ProcessOCR(File picture) throws Exception {
         if (tessAPI == null)
             if (dataPath.isEmpty() || languageCode.isEmpty()) {
-                return "어떤 언어로 할지 선택을 먼저 해주세요";
+                return "어떤 언어로 할지 선택 해주세요";
             } else {
                 tessAPI = new TessBaseAPI();
                 tessAPI.init(dataPath, languageCode);
             }
-        
+
         tessAPI.setImage(picture);
+
         String hocrText = tessAPI.getHOCRText(0);
 
         return util.ConvertHocrToText(hocrText);

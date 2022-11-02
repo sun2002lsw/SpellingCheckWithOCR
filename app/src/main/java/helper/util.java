@@ -105,6 +105,10 @@ public class util {
 
     @NonNull
     static public String ConvertHocrToText(String Hocr) {
+        if (Hocr == null) {
+            return "";
+        }
+
         Document xml = null;
         try {
             xml = loadXMLFromString(Hocr);

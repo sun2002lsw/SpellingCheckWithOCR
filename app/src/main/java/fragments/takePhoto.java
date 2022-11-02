@@ -48,8 +48,7 @@ public class takePhoto extends Fragment {
                 if (permissionGranted) {
                     TakePicture();
                 } else {
-                    Toast toast = Toast.makeText(getContext(), "카메라 사용을 허가 해주세요", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(getContext(), "카메라 사용을 허가 해주세요", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -154,8 +153,7 @@ public class takePhoto extends Fragment {
         try {
             picture = CreateTempPictureFile();
         } catch (IOException ex) {
-            Toast toast = Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG);
-            toast.show();
+            Toast.makeText(getContext(), ex.toString(), Toast.LENGTH_LONG).show();
             return;
         }
         pictureUri = util.FileToUri(getContext(), picture);

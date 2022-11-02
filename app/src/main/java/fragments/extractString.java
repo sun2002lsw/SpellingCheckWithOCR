@@ -44,17 +44,18 @@ public class extractString extends Fragment {
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         File picture = util.MainActivity(this).GetPicture();
         if (picture == null) {
-            Toast toast = Toast.makeText(getContext(), "사진을 찍어주세요", Toast.LENGTH_SHORT);
-            toast.show();
-            
+            Toast.makeText(getContext(), "사진을 찍어주세요", Toast.LENGTH_SHORT).show();
             util.MainActivity(this).EnableTab(0);
             return view;
         }
 
         // 찍어둔 사진 출력
-        ImageView imageView = view.findViewById(R.id.picture2);
-        Uri pictureUri = util.FileToUri(getContext(), picture);
-        imageView.setImageURI(pictureUri);
+        new Thread(() -> {
+            ImageView imageView = view.findViewById(R.id.picture2);
+            Uri pictureUri = util.FileToUri(getContext(), picture);
+
+            activity.runOnUiThread(() -> imageView.setImageURI(pictureUri));
+        }).start();
 
         // OCR 진행에 따른 시각화 처리
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
@@ -67,30 +68,44 @@ public class extractString extends Fragment {
         Button stopOCR = view.findViewById(R.id.stopOCR);
         stopOCR.setOnClickListener(v -> ocrEngine.StopOCR());
 
-        // OCR 비동기로 진행
-        EditText editText = view.findViewById(R.id.extractedString);
-        Button checkSpelling = view.findViewById(R.id.checkSpelling);
-
+        // OCR 진행
         new Thread(() -> {
+            EditText editText = view.findViewById(R.id.extractedString);
             activity.runOnUiThread(() -> editText.getText().clear());
 
             // OCR
-            String extractedString = ocrEngine.ProcessOCR(picture);
+            String extractedString = null;
+            try {
+                extractedString = ocrEngine.ProcessOCR(picture);
+            } catch (Exception e) {
+                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            // 작업이 중단한 경우, 첫 화면으로 복귀
+            if (extractedString == null || extractedString.isEmpty()) {
+                activity.runOnUiThread(() -> util.MainActivity(extractString.this).EnableTab(0));
+                return;
+            }
 
             // 후처리
-            util.MainActivity(extractString.this).SetExtractedString(extractedString);
+            String finalExtractedString = extractedString;
+            Button checkSpelling = view.findViewById(R.id.checkSpelling);
+
             activity.runOnUiThread(() -> {
-                editText.setText(extractedString);
+                editText.setText(finalExtractedString);
 
                 stopOCR.setEnabled(false);
                 stopOCR.setTextColor(Color.TRANSPARENT);
                 stopOCR.setBackgroundColor(Color.TRANSPARENT);
 
                 checkSpelling.setEnabled(true);
+                checkSpelling.setTextColor(Color.BLACK);
                 checkSpelling.setBackgroundColor(Color.GREEN);
 
                 progressBar.setProgress(100);
             });
+
+            util.MainActivity(extractString.this).SetExtractedString(extractedString);
         }).start();
 
         return view;
