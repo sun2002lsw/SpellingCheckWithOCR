@@ -118,7 +118,10 @@ public class takePhoto extends Fragment {
         // 글자 읽기 버튼. 처음에는 비활성화하고 AfterTakePicture 이후 활성화. 누르면 다음 탭으로 진행
         extractStringBnt = view.findViewById(R.id.extractString);
         extractStringBnt.setEnabled(false);
-        extractStringBnt.setOnClickListener(v -> util.MainActivity(takePhoto.this).EnableTab(1));
+        extractStringBnt.setOnClickListener(v -> {
+            util.MainActivity(takePhoto.this).SetExtractedString("");
+            util.MainActivity(takePhoto.this).EnableTab(1);
+        });
 
         // 혹시 이미 사진을 찍었으면 다 필요없고 그걸로 처리
         File picture = util.MainActivity(this).GetPicture();
