@@ -1,6 +1,5 @@
 package fragments;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,12 +51,12 @@ public class extractString extends Fragment {
         AtomicBoolean ocrComplete = new AtomicBoolean();
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
-        File picture = helper.util.MainActivity(this).GetPicture();
+        File picture = util.MainActivity(this).GetPicture();
         if (picture == null) {
             Toast toast = Toast.makeText(getContext(), "사진을 찍어주세요", Toast.LENGTH_SHORT);
             toast.show();
             
-            helper.util.MainActivity(this).EnableTab(0);
+            util.MainActivity(this).EnableTab(0);
             return view;
         }
 
@@ -72,7 +70,7 @@ public class extractString extends Fragment {
         TessBaseAPI.ProgressNotifier ocrProgressNotifier = progress -> progressBar.setProgress(progress.getPercent());
 
         // OCR 비동기로 진행
-        OcrEngine ocrEngine = helper.util.MainActivity(this).GetOcrEngine();
+        OcrEngine ocrEngine = util.MainActivity(this).GetOcrEngine();
         new Thread(() -> {
             activity.runOnUiThread(() -> editText.getText().clear());
 
@@ -84,6 +82,7 @@ public class extractString extends Fragment {
             // 후처리
             util.MainActivity(extractString.this).SetExtractedString(extractedString);
             activity.runOnUiThread(() -> {
+                progressBar.setProgress(100);
                 editText.setText(extractedString);
                 checkSpelling.setBackgroundColor(Color.GREEN);
                 checkSpelling.setEnabled(true);

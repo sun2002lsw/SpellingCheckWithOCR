@@ -8,6 +8,8 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
 
+import helper.util;
+
 public class OCR_tesseract implements OcrEngine {
 
     private TessBaseAPI tessAPI;
@@ -26,7 +28,7 @@ public class OCR_tesseract implements OcrEngine {
         File dataFile = new File(dataFilePath);
         if(!dataFile.exists()) {
             String assetPath = "tessdata/" + languageCode + ".traineddata";
-            helper.util.CopyAsset(ctx, assetPath, dataFilePath);
+            util.CopyAsset(ctx, assetPath, dataFilePath);
         }
 
         //Tesseract API 세팅
@@ -37,6 +39,8 @@ public class OCR_tesseract implements OcrEngine {
     @Override
     public String ProcessOCR(File picture) {
         tessAPI.setImage(picture);
-        return tessAPI.getHOCRText(0);
+        String hocrText = tessAPI.getHOCRText(0);
+
+        return util.ConvertHocrToText(hocrText);
     }
 }
