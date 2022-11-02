@@ -6,9 +6,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         menuSelectLang = languages[0];
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("어떤 글자를 읽을지 선택해주세요");
+        builder.setTitle("어떤 글자를 읽을지 선택");
         builder.setSingleChoiceItems(languages, 0, (dialog, which) -> {
             menuSelectLang = languages[which];
             String text = menuSelectLang + "의 인식률은 [" + util.LevelToKorean(which) + "]입니다";
@@ -141,7 +144,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showInfoMenu() {
+        final Dialog dialog = new Dialog(MainActivity.this);
 
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_info);
+
+        Button trap = dialog.findViewById(R.id.infoBtn);
+        trap.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     // 해당 탭까지 활성화
