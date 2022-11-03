@@ -3,15 +3,25 @@ package com.example.spellingcheckwithocr;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -128,11 +138,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.setPositiveButton("선택", (dialog, which) -> {
-            ocrLanguage = util.KoreanToLanguageCode(menuSelectLang);
+            String selectLang = util.KoreanToLanguageCode(menuSelectLang);
+            if (selectLang == ocrLanguage) {
+                String text = "이미 " + menuSelectLang + " 읽기로 설정중입니다";
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            ocrLanguage = selectLang;
             tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
-
+            SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
+            
             String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기로 설정 되었습니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            
+            // 사진 촬영 화면으로 복귀
+            EnableTab(0);
         });
 
         builder.setNegativeButton("취소", (dialog, which) -> {
@@ -150,8 +171,33 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_info);
 
-        Button trap = dialog.findViewById(R.id.infoBtn);
-        trap.setOnClickListener(v -> dialog.dismiss());
+        // 맨위 제목
+        Animation blink = new AlphaAnimation(1.0f, 0.0f);
+        blink.setDuration(250);
+        blink.setStartOffset(1000);
+        blink.setRepeatMode(Animation.RESTART);
+        blink.setRepeatCount(Animation.INFINITE);
+
+        TextView title = dialog.findViewById(R.id.infoTitle);
+        title.startAnimation(blink);
+
+        // 맨 아래 버튼
+        Button btn = dialog.findViewById(R.id.infoBtn);
+        btn.setOnClickListener(v -> dialog.dismiss());
+
+        int colorFrom = ContextCompat.getColor(this, R.color.purple_200);
+        int colorTo = ContextCompat.getColor(this, R.color.teal_200);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(500);
+        colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnimation.setRepeatCount(ValueAnimator.INFINITE);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                btn.setBackgroundColor((int)animation.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
 
         dialog.show();
     }

@@ -8,12 +8,13 @@
     <TextView
         android:id="@+id/infoTitle"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
-        android:background="@drawable/bg_edit_text"
+        android:maxLines="1"
         android:text="@string/infoTitle"
         android:textAlignment="center"
         android:textColor="@color/red"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -26,16 +27,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:adjustViewBounds="true"
             android:contentDescription="@string/info"
             android:scaleType="fitXY"
-            app:srcCompat="@mipmap/ic_gazuaa_foreground" />
+            app:srcCompat="@drawable/programmer" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -43,11 +44,11 @@
                 android:id="@+id/infoText1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:autoSizeTextType="uniform"
                 android:gravity="center"
                 android:text="@string/infoText1"
+                android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -58,7 +59,8 @@
                 android:layout_weight="1"
                 android:autoSizeTextType="uniform"
                 android:gravity="center"
-                android:text="@string/infoText2" />
+                android:text="@string/infoText2"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/infoText3"
@@ -68,7 +70,8 @@
                 android:layout_weight="1"
                 android:autoSizeTextType="uniform"
                 android:gravity="center"
-                android:text="@string/infoText3" />
+                android:text="@string/infoText3"
+                android:textColor="@android:color/black" />
 
             <Button
                 android:id="@+id/infoBtn"
@@ -80,9 +83,11 @@
                 android:layout_weight="1"
                 android:autoSizeTextType="uniform"
                 android:gravity="center"
-                android:text="@string/infoBtn" />
+                android:text="@string/infoBtn"
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
