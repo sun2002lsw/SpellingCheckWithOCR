@@ -37,7 +37,7 @@ import helper.util;
 
 public class takePhoto extends Fragment {
 
-    private Uri pictureUri;
+    private File newTakePicture;
     private ImageView imageView;
     private Button takePhotoBtn, takePhotoAgainBtn, extractStringBnt;
 
@@ -58,14 +58,16 @@ public class takePhoto extends Fragment {
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     // 사진을 새로 찍은 시점에서 문자열 다시 추출 해야 함
+                    util.MainActivity(takePhoto.this).SetPicture(newTakePicture);
                     util.MainActivity(takePhoto.this).SetExtractedString("");
-                    AfterTakePicture();
+                    AfterTakePicture(newTakePicture);
                 }
             });
 
     // 사진을 찍은 후 처리
-    private void AfterTakePicture() {
+    private void AfterTakePicture(File picture) {
         // 촬영 이미지
+        Uri pictureUri = util.FileToUri(getContext(), picture);
         imageView.setImageURI(pictureUri);
 
         // 첫 촬영 버튼 사라짐
@@ -127,8 +129,7 @@ public class takePhoto extends Fragment {
         // 혹시 이미 사진을 찍었으면 다 필요없고 그걸로 처리
         File picture = util.MainActivity(this).GetPicture();
         if (picture != null) {
-            pictureUri = util.FileToUri(getContext(), picture);
-            AfterTakePicture();
+            AfterTakePicture(picture);
         } else {
             // 아직 아무 사진도 안 찍었으면, 이참에 폴더 정리
             try {
@@ -160,14 +161,13 @@ public class takePhoto extends Fragment {
     // 사진 찍기. 찍은 사진 이미지 뷰에 출력
     private void TakePicture() {
         // 찍은 사진을 저장할 임시 사진 파일 생성및 URI 획득
-        File picture;
         try {
-            picture = CreateTempPictureFile();
+            newTakePicture = CreateTempPictureFile();
         } catch (IOException ex) {
             Toast.makeText(getContext(), ex.toString(), Toast.LENGTH_LONG).show();
             return;
         }
-        pictureUri = util.FileToUri(getContext(), picture);
+        Uri pictureUri = util.FileToUri(getContext(), newTakePicture);
 
         // 해당 URI 파일에 사진을 저장하는 것으로 사진 촬영 시작
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -198,7 +198,6 @@ public class takePhoto extends Fragment {
         File picture = File.createTempFile(pictureFileName, ".jpg", storageDir);
 
         // 해당 사진 이미지 반환
-        util.MainActivity(this).SetPicture(picture);
         return picture;
     }
 
