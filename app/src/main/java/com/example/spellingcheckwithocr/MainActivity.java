@@ -7,13 +7,9 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -139,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setPositiveButton("선택", (dialog, which) -> {
             String selectLang = util.KoreanToLanguageCode(menuSelectLang);
-            if (selectLang == ocrLanguage) {
+            if (selectLang.equals(ocrLanguage)) {
                 String text = "이미 " + menuSelectLang + " 읽기로 설정중입니다";
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                 return;
@@ -191,12 +187,7 @@ public class MainActivity extends AppCompatActivity {
         colorAnimation.setDuration(500);
         colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
         colorAnimation.setRepeatCount(ValueAnimator.INFINITE);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                btn.setBackgroundColor((int)animation.getAnimatedValue());
-            }
-        });
+        colorAnimation.addUpdateListener(animation -> btn.setBackgroundColor((int)animation.getAnimatedValue()));
         colorAnimation.start();
 
         dialog.show();

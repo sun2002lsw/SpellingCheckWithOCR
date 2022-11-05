@@ -102,6 +102,11 @@ public class extractString extends Fragment {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
 
+        // 작업 도중에 뭔가 다른짓해서 Fragment 파괴됨
+        if (util.MainActivity(extractString.this) == null) {
+            return;
+        }
+
         // 작업이 중단된 경우, 첫 화면으로 복귀
         if (extractedString == null || extractedString.isEmpty()) {
             util.MainActivity(extractString.this).SetExtractedString("");
