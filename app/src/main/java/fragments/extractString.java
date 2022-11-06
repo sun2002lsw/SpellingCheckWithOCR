@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,8 +30,8 @@ public class extractString extends Fragment {
     File picture;
     ImageView imageView;
     ProgressBar progressBar;
-    EditText editText;
-    Button ocrBtn;
+    TextView textView;
+    Button abortOCR, editText, checkSpelling;
     
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +47,26 @@ public class extractString extends Fragment {
             return view;
         }
         
-        imageView = view.findViewById(R.id.picture2);
+        imageView = view.findViewById(R.id.pictureForOCR);
+        imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
+
         progressBar = view.findViewById(R.id.progressBar);
-        editText = view.findViewById(R.id.extractedString);
-        ocrBtn = view.findViewById(R.id.ocrBtn);
+        textView = view.findViewById(R.id.extractedString);
+
+        // 각 버튼 설정
+        abortOCR = view.findViewById(R.id.abortOCR);
+        abortOCR.setBackgroundColor(Color.RED);
+
+        editText = view.findViewById(R.id.editText);
+        editText.setEnabled(false);
+
+        checkSpelling = view.findViewById(R.id.checkSpelling);
+        checkSpelling.setEnabled(false);
+        checkSpelling.setOnClickListener(v -> {
+            String text = textView.getText().toString();
+            util.MainActivity(extractString.this).SetExtractedString(text);
+            util.MainActivity(extractString.this).EnableTab(2);
+        });
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         picture = util.MainActivity(this).GetPicture();
@@ -80,7 +96,7 @@ public class extractString extends Fragment {
     }
 
     private void processOCR(@NonNull FragmentActivity activity) {
-        activity.runOnUiThread(() -> editText.getText().clear());
+        //activity.runOnUiThread(() -> textView.settex);
 
         // OCR 진행에 따른 시각화 처리
         progressBar.setProgress(0);
@@ -90,7 +106,7 @@ public class extractString extends Fragment {
         ocrEngine.SetProgressNotifier(pn);
 
         // OCR 중단 버튼
-        ocrBtn.setOnClickListener(v -> ocrEngine.StopOCR());
+        abortOCR.setOnClickListener(v -> ocrEngine.StopOCR());
 
         // OCR
         String extractedString = null;
@@ -119,13 +135,21 @@ public class extractString extends Fragment {
 
     private void afterOCR(@NonNull FragmentActivity activity, String extractedString) {
         activity.runOnUiThread(() -> {
-            editText.setText(extractedString);
+            textView.setText(extractedString);
 
-            // ocr 중단 버튼을 맞춤법 검사 버튼으로 수정
-            ocrBtn.setText("맞춤법 검사하기");
-            ocrBtn.setTextColor(Color.BLACK);
-            ocrBtn.setBackgroundColor(Color.GREEN);
-            ocrBtn.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
+            // ocr 중단 버튼 사라짐
+            abortOCR.setEnabled(false);
+            abortOCR.setTextColor(Color.TRANSPARENT);
+            abortOCR.setBackgroundColor(Color.TRANSPARENT);
+
+            // 수정 버튼 & 맞춤법 버튼 등장
+            editText.setEnabled(true);
+            editText.setTextColor(Color.BLACK);
+            editText.setBackgroundColor(Color.YELLOW);
+
+            checkSpelling.setEnabled(true);
+            checkSpelling.setTextColor(Color.BLACK);
+            checkSpelling.setBackgroundColor(Color.GREEN);
 
             progressBar.setProgress(100);
         });

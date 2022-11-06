@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.spellingcheckwithocr.MainActivity;
 
-import org.jetbrains.annotations.Contract;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,7 +36,6 @@ public class util {
     }
 
     @NonNull
-    @Contract(pure = true)
     static public String LanguageCodeToKorean(@NonNull String languageCode) {
         switch (languageCode) {
             case "kor":
@@ -50,7 +48,6 @@ public class util {
     }
 
     @NonNull
-    @Contract(pure = true)
     static public String KoreanToLanguageCode(@NonNull String korean) {
         switch (korean) {
             case "한글":
@@ -63,7 +60,6 @@ public class util {
     }
 
     @NonNull
-    @Contract(pure = true)
     static public String LevelToKorean(int level) {
         switch (level) {
             case 0:

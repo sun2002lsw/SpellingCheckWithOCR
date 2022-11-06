@@ -219,6 +219,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void MoveTab(int position) {
+        if (viewPager.getCurrentItem() <= position) {
+            return;
+        }
+
+        viewPager.setCurrentItem(position);
+    }
+
     // 촬영한 사진
     public void SetPicture(File picture) {
         this.picture = picture;
