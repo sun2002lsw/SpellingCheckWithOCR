@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.spellingcheckwithocr.R;
@@ -41,6 +42,8 @@ public class takePhoto extends Fragment {
     private File newTakePicture;
     private ImageView imageView;
     private Button takePhotoBtn, takePhotoAgainBtn, extractStringBnt;
+
+    private boolean isFullScreenImage = false;
 
     // 카메라 사용 허가에 대한 처리. 허가하면 그대로 이어서 카메라 실행
     final private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
@@ -73,6 +76,26 @@ public class takePhoto extends Fragment {
         View view = inflater.inflate(R.layout.fragment_take_photo, container, false);
 
         imageView = view.findViewById(R.id.picture);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFullScreenImage) {
+                    isFullScreenImage = false;
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                    imageView.setAdjustViewBounds(true);
+
+                    float scale = getResources().getDisplayMetrics().density;
+                    int paddingDP = (int) (20*scale + 0.5f);
+                    imageView.setPadding(paddingDP, paddingDP, paddingDP, paddingDP);
+                } else {
+                    isFullScreenImage = true;
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                    imageView.setPadding(0, 0, 0, 0);
+                }
+            }
+        });
 
         // 첫 사진 찍기 버튼. 카메라 권한이 없으면 권한 요청 & 카메라 촬영, 아니면 그냥 바로 촬영
         takePhotoBtn = view.findViewById(R.id.takePhoto);
