@@ -73,10 +73,8 @@ public class extractString extends Fragment {
             return view;
         }
         
-        // OCR 진행
-        new Thread(() -> {
-            processOCR(activity);
-        }).start();
+        // OCR 비동기 진행
+        new Thread(() -> processOCR(activity)).start();
 
         return view;
     }
@@ -102,7 +100,7 @@ public class extractString extends Fragment {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
 
-        // 작업 도중에 뭔가 다른짓해서 Fragment 파괴됨
+        // 작업 도중에 뭔가 다른짓해서 현재 Fragment 파괴됨
         if (util.MainActivity(extractString.this) == null) {
             return;
         }
@@ -127,16 +125,7 @@ public class extractString extends Fragment {
             ocrBtn.setText("맞춤법 검사하기");
             ocrBtn.setTextColor(Color.BLACK);
             ocrBtn.setBackgroundColor(Color.GREEN);
-            ocrBtn.setOnClickListener(v -> {
-                String check = util.MainActivity(extractString.this).GetExtractedString();
-                if (check.isEmpty()) {
-                    Toast.makeText(getContext(), "앗! 사진을 다시 찍었네요", Toast.LENGTH_SHORT).show();
-                    util.MainActivity(extractString.this).EnableTab(1);
-                    return;
-                }
-
-                util.MainActivity(extractString.this).EnableTab(2);
-            });
+            ocrBtn.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
 
             progressBar.setProgress(100);
         });
