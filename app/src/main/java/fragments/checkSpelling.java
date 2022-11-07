@@ -52,6 +52,8 @@ public class checkSpelling extends Fragment {
                 ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
             }
+
+            util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeOriginalView);
         });
 
         spellingCheckView = view.findViewById(R.id.spellingCheckTextView);
@@ -66,6 +68,8 @@ public class checkSpelling extends Fragment {
                 ConstraintLayout layout = view.findViewById(R.id.spellingCheckLayout);
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
             }
+
+            util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeCheckView);
         });
 
         // 맞춤법 검사

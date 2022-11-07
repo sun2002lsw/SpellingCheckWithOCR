@@ -63,26 +63,13 @@ public class extractString extends Fragment {
         
         textView = view.findViewById(R.id.extractedString);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        textView.setOnClickListener(v -> {
-            if (isLargeTextView) {
-                isLargeTextView = false;
-                ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-            }else {
-                isLargeTextView = true;
-                ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
-            }
-        });
+        textView.setOnClickListener(v -> Toast.makeText(getContext(), "아직 사진을 읽는 중입니다", Toast.LENGTH_SHORT).show());
 
         textEditDialog = new Dialog(ctx);
         textEditDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         textEditDialog.setCancelable(true);
         textEditDialog.setContentView(R.layout.dialog_edit_text);
-
-        TextView dialogTextView = textEditDialog.findViewById(R.id.saveEditedText);
-        dialogTextView.setMovementMethod(new ScrollingMovementMethod());
-        dialogTextView.setOnClickListener(v -> {
+        textEditDialog.findViewById(R.id.saveEditedText).setOnClickListener(v -> {
             EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
             String editedText = editTextView.getText().toString();
 
@@ -120,17 +107,17 @@ public class extractString extends Fragment {
         // 이미 문자열을 추출했으면, 그대로 출력
         String extractedString = util.MainActivity(extractString.this).GetExtractedString();
         if (!extractedString.isEmpty()) {
-            afterOCR(activity, extractedString);
+            afterOCR(activity, view, extractedString);
             return view;
         }
         
         // OCR 비동기 진행
-        new Thread(() -> processOCR(activity)).start();
+        new Thread(() -> processOCR(activity, view)).start();
 
         return view;
     }
 
-    private void processOCR(@NonNull FragmentActivity activity) {
+    private void processOCR(@NonNull FragmentActivity activity, View view) {
         // OCR 진행에 따른 시각화 처리
         progressBar.setProgress(0);
         TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
@@ -162,12 +149,25 @@ public class extractString extends Fragment {
 
         // 작업 성공
         util.MainActivity(extractString.this).SetExtractedString(extractedString);
-        afterOCR(activity, extractedString);
+        afterOCR(activity, view, extractedString);
     }
 
-    private void afterOCR(@NonNull FragmentActivity activity, String extractedString) {
+    private void afterOCR(@NonNull FragmentActivity activity, View view, String extractedString) {
         activity.runOnUiThread(() -> {
             textView.setText(extractedString);
+            textView.setOnClickListener(v -> {
+                if (isLargeTextView) {
+                    isLargeTextView = false;
+                    ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                } else {
+                    isLargeTextView = true;
+                    ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                }
+
+                util.MainActivity(extractString.this).SetSwipeEnable(!isLargeTextView);
+            });
 
             // ocr 중단 버튼 사라짐
             abortOCR.setEnabled(false);

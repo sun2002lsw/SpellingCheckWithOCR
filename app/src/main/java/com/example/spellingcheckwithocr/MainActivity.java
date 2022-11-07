@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 탭을 스와이프 했을 때
+        // 탭이 스와이프 됐을 때
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -232,6 +232,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         viewPager.setCurrentItem(position);
+    }
+    
+    // 손으로 밀어서 화면 넘기는거 설정 or 해제
+    public void SetSwipeEnable(boolean enabled) {
+        viewPager.setUserInputEnabled(enabled);
     }
 
     // 촬영한 사진
