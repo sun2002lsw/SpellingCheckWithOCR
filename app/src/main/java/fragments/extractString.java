@@ -58,7 +58,7 @@ public class extractString extends Fragment {
         imageView = view.findViewById(R.id.pictureForOCR);
         imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
 
-        progressBar = view.findViewById(R.id.progressBar);
+        progressBar = view.findViewById(R.id.OCRprogressBar);
         
         textView = view.findViewById(R.id.extractedString);
         textView.setOnClickListener(v -> {

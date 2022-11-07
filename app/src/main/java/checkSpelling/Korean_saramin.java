@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class Korean_saramin implements SpellingCheckEngine {
 
+    @NonNull
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
         Document doc;
