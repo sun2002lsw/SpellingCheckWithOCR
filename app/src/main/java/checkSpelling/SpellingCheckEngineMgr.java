@@ -21,6 +21,7 @@ public class SpellingCheckEngineMgr {
         engineByLanguage = new HashMap<String, SpellingCheckEngine>();
         curLanguageCode = "kor";
         SetKoreanCheckEngine("기본값");
+        SetEnglishCheckEngine("기본값");
     }
 
     public void SetKoreanCheckEngine(@NonNull String engineName) {

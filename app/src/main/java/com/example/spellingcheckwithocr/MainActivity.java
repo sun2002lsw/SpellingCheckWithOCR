@@ -25,7 +25,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.File;
 
 import OCR.OCR_tesseract;
-import checkSpelling.Korean_saramin;
 import checkSpelling.SpellingCheckEngine;
 import checkSpelling.SpellingCheckEngineMgr;
 import helper.util;
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
 
         // 맞춤법 검사기 등록
+        spellingCheckEngineMgr = new SpellingCheckEngineMgr();
         spellingCheckEngineMgr.Init();
     }
 

@@ -1,6 +1,7 @@
 package fragments;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import helper.util;
 
 public class checkSpelling extends Fragment {
 
+    boolean isLargeOriginalView;
     boolean isLargeCheckView;
     TextView spellingCheckView;
 
@@ -38,10 +40,22 @@ public class checkSpelling extends Fragment {
         
         // UI 설정
         TextView textView = view.findViewById(R.id.originalTextView);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setText(extractedString);
-        textView.setOnClickListener(v -> util.MainActivity(checkSpelling.this).MoveTab(1));
+        textView.setOnClickListener(v -> {
+            if (isLargeOriginalView) {
+                isLargeOriginalView = false;
+                ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+            }else {
+                isLargeOriginalView = true;
+                ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+            }
+        });
 
         spellingCheckView = view.findViewById(R.id.spellingCheckTextView);
+        spellingCheckView.setMovementMethod(new ScrollingMovementMethod());
         spellingCheckView.setOnClickListener(v -> {
             if (isLargeCheckView) {
                 isLargeCheckView = false;
@@ -59,17 +73,17 @@ public class checkSpelling extends Fragment {
             ArrayList<WrongWordInfo> wrongWordInfos;
             SpellingCheckEngine checkEngine = util.MainActivity(checkSpelling.this).GetSpellingCheckEngine();
 
-            String checkedStr = new String();
+            StringBuilder checkedStr = new StringBuilder();
             try {
                 wrongWordInfos = checkEngine.CheckSpelling(extractedString);
                 for (int i = 0; i < wrongWordInfos.size(); i ++) {
-                    checkedStr += makeWrongWordCheckStr(i, wrongWordInfos.get(i));
+                    checkedStr.append(makeWrongWordCheckStr(i, wrongWordInfos.get(i)));
                 }
             } catch (Exception e) {
-                checkedStr = e.toString();
+                checkedStr = new StringBuilder(e.toString());
             }
 
-            afterSpellingCheck(view, activity, checkedStr);
+            afterSpellingCheck(view, activity, checkedStr.toString());
 
         }).start();
 
@@ -85,14 +99,15 @@ public class checkSpelling extends Fragment {
         });
     }
 
-    private String makeWrongWordCheckStr(int index, WrongWordInfo wrongWordInfo) {
-        String numbering = Integer.toString(index + 1) + ". ";
-        String correction = wrongWordInfo.wrongWord + " -> ";
-        correction += wrongWordInfo.correctWords[0];
+    @NonNull
+    private String makeWrongWordCheckStr(int index, @NonNull WrongWordInfo wrongWordInfo) {
+        String numbering = (index + 1) + ". ";
+        StringBuilder correction = new StringBuilder(wrongWordInfo.wrongWord + " -> ");
+        correction.append(wrongWordInfo.correctWords[0]);
         for (int i = 1; i < wrongWordInfo.correctWords.length; i++) {
-            correction += ", " + wrongWordInfo.correctWords[i];
+            correction.append(", ").append(wrongWordInfo.correctWords[i]);
         }
-        String reason = "\n(" + wrongWordInfo.reason + ")\n";
+        String reason = "\n※ " + wrongWordInfo.reason + "\n\n";
         
         return numbering + correction + reason;
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class extractString extends Fragment {
         progressBar = view.findViewById(R.id.OCRprogressBar);
         
         textView = view.findViewById(R.id.extractedString);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setOnClickListener(v -> {
             if (isLargeTextView) {
                 isLargeTextView = false;
@@ -77,7 +79,10 @@ public class extractString extends Fragment {
         textEditDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         textEditDialog.setCancelable(true);
         textEditDialog.setContentView(R.layout.dialog_edit_text);
-        textEditDialog.findViewById(R.id.saveEditedText).setOnClickListener(v -> {
+
+        TextView dialogTextView = textEditDialog.findViewById(R.id.saveEditedText);
+        dialogTextView.setMovementMethod(new ScrollingMovementMethod());
+        dialogTextView.setOnClickListener(v -> {
             EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
             String editedText = editTextView.getText().toString();
 
