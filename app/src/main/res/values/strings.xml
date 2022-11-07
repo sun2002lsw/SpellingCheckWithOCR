@@ -21,4 +21,6 @@
     <string name="infoText3">그들은 순간의 작업으로\n빠른 테스트를 원합니다</string>
     <string name="infoBtn">테스트\n하러가기</string>
     <string name="editText">글 수정하기</string>
+    <string name="saveText">저장하기</string>
+    <string name="emptyHint"> </string>
 </resources>

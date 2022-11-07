@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -7,13 +8,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -31,6 +36,8 @@ public class extractString extends Fragment {
     ImageView imageView;
     ProgressBar progressBar;
     TextView textView;
+    boolean isLargeTextView;
+    Dialog textEditDialog;
     Button abortOCR, editText, checkSpelling;
     
     @Override
@@ -54,7 +61,31 @@ public class extractString extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         
         textView = view.findViewById(R.id.extractedString);
-        textView.setOnClickListener(v -> openTextEditDialog());
+        textView.setOnClickListener(v -> {
+            if (isLargeTextView) {
+                isLargeTextView = false;
+                ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+            }else {
+                isLargeTextView = true;
+                ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+            }
+        });
+
+        textEditDialog = new Dialog(ctx);
+        textEditDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        textEditDialog.setCancelable(true);
+        textEditDialog.setContentView(R.layout.dialog_edit_text);
+        textEditDialog.findViewById(R.id.saveEditedText).setOnClickListener(v -> {
+            EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
+            String editedText = editTextView.getText().toString();
+
+            util.MainActivity(extractString.this).SetExtractedString(editedText);
+            textView.setText(editedText);
+
+            textEditDialog.dismiss();
+        });
 
         abortOCR = view.findViewById(R.id.abortOCR);
         abortOCR.setBackgroundColor(Color.RED);
@@ -152,7 +183,10 @@ public class extractString extends Fragment {
     }
     
     private void openTextEditDialog() {
-        // 해당 다이얼로그에서 텍스트 변경하면서 같이 실행
-        // util.MainActivity(extractString.this).SetExtractedString(text);
+        EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
+        editTextView.setText(textView.getText().toString());
+
+        textEditDialog.show();
+        textEditDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 }
