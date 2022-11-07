@@ -67,14 +67,14 @@ public class extractString extends Fragment {
 
         textEditDialog = new Dialog(ctx);
         textEditDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        textEditDialog.setCancelable(true);
         textEditDialog.setContentView(R.layout.dialog_edit_text);
+        textEditDialog.findViewById(R.id.cancelEditedText).setOnClickListener(v -> textEditDialog.dismiss());
         textEditDialog.findViewById(R.id.saveEditedText).setOnClickListener(v -> {
             EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
             String editedText = editTextView.getText().toString();
 
             util.MainActivity(extractString.this).SetExtractedString(editedText);
-            textView.setText(editedText);
+            activity.runOnUiThread(() -> textView.setText(editedText));
 
             textEditDialog.dismiss();
         });
