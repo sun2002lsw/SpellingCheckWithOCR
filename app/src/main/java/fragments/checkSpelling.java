@@ -94,12 +94,16 @@ public class checkSpelling extends Fragment {
         return view;
     }
 
-    private void afterSpellingCheck(@NonNull View view, @NonNull FragmentActivity activity, String checkedStr) {
+    private void afterSpellingCheck(@NonNull View view, @NonNull FragmentActivity activity, @NonNull String checkedStr) {
         ProgressBar progressCircle = view.findViewById(R.id.checkSpellingProgress);
+        if (checkedStr.isEmpty()) {
+            checkedStr = "고칠 부분이 없습니다~ 대단합니다!";
+        }
 
+        String finalCheckedStr = checkedStr;
         activity.runOnUiThread(() -> {
             progressCircle.setVisibility(View.GONE);
-            spellingCheckView.setText(checkedStr);
+            spellingCheckView.setText(finalCheckedStr);
         });
     }
 
