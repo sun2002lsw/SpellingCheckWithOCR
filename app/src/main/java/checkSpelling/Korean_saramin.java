@@ -29,14 +29,14 @@ public class Korean_saramin {
         try {
             jsonObject = new JSONObject(jsonStr);
         } catch (JSONException e) {
-            throw new Exception("body -> Json 변환에 실패했습니다. 웹 응답이 변경되었습니다.");
+            throw new Exception("body -> Json 변환에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
 
         JSONArray jsonArray;
         try {
             jsonArray = jsonObject.getJSONArray("word_list");
         } catch (JSONException e) {
-            throw new Exception("word_list 추출에 실패했습니다. 웹 응답이 변경되었습니다.");
+            throw new Exception("word_list 추출에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
 
         ArrayList<WrongWordInfo> wrongWordInfos = new ArrayList<>();
@@ -71,21 +71,21 @@ public class Korean_saramin {
         try {
             wrongWord = wrongWordJsonInfo.getString("errorWord");
         } catch (JSONException e) {
-            throw new Exception("errorWord 추출에 실패했습니다. 웹 응답이 변경되었습니다.");
+            throw new Exception("errorWord 추출에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
 
         String reason;
         try {
             reason = wrongWordJsonInfo.getString("helpMessage");
         } catch (JSONException e) {
-            throw new Exception("helpMessage 추출에 실패했습니다. 웹 응답이 변경되었습니다.");
+            throw new Exception("helpMessage 추출에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
 
         String correctWords;
         try {
             correctWords = wrongWordJsonInfo.getString("candWordList");
         } catch (JSONException e) {
-            throw new Exception("candWordList 추출에 실패했습니다. 웹 응답이 변경되었습니다.");
+            throw new Exception("candWordList 추출에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
 
         return new WrongWordInfo(wrongWord, reason, correctWords.split(","));

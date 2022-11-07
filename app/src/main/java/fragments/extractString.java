@@ -46,27 +46,26 @@ public class extractString extends Fragment {
         if (ctx == null) {
             return view;
         }
-        
+
+        // 각 UI 설정
         imageView = view.findViewById(R.id.pictureForOCR);
         imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
 
         progressBar = view.findViewById(R.id.progressBar);
+        
         textView = view.findViewById(R.id.extractedString);
+        textView.setOnClickListener(v -> openTextEditDialog());
 
-        // 각 버튼 설정
         abortOCR = view.findViewById(R.id.abortOCR);
         abortOCR.setBackgroundColor(Color.RED);
 
         editText = view.findViewById(R.id.editText);
         editText.setEnabled(false);
+        editText.setOnClickListener(v -> openTextEditDialog());
 
         checkSpelling = view.findViewById(R.id.checkSpelling);
         checkSpelling.setEnabled(false);
-        checkSpelling.setOnClickListener(v -> {
-            String text = textView.getText().toString();
-            util.MainActivity(extractString.this).SetExtractedString(text);
-            util.MainActivity(extractString.this).EnableTab(2);
-        });
+        checkSpelling.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
 
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         picture = util.MainActivity(this).GetPicture();
@@ -96,8 +95,6 @@ public class extractString extends Fragment {
     }
 
     private void processOCR(@NonNull FragmentActivity activity) {
-        //activity.runOnUiThread(() -> textView.settex);
-
         // OCR 진행에 따른 시각화 처리
         progressBar.setProgress(0);
         TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
@@ -123,7 +120,6 @@ public class extractString extends Fragment {
 
         // 작업이 중단된 경우, 첫 화면으로 복귀
         if (extractedString == null || extractedString.isEmpty()) {
-            util.MainActivity(extractString.this).SetExtractedString("");
             activity.runOnUiThread(() -> util.MainActivity(extractString.this).EnableTab(0));
             return;
         }
@@ -153,5 +149,10 @@ public class extractString extends Fragment {
 
             progressBar.setProgress(100);
         });
+    }
+    
+    private void openTextEditDialog() {
+        // 해당 다이얼로그에서 텍스트 변경하면서 같이 실행
+        // util.MainActivity(extractString.this).SetExtractedString(text);
     }
 }

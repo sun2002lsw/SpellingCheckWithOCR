@@ -127,11 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("어떤 글자를 읽을지 선택");
-        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> {
-            menuSelectLang = languages[which];
-            String text = menuSelectLang + "의 인식률은 [" + util.LevelToKorean(which) + "]입니다";
-            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-        });
+        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> menuSelectLang = languages[which]);
 
         builder.setPositiveButton("선택", (dialog, which) -> {
             String selectLang = util.KoreanToLanguageCode(menuSelectLang);

@@ -59,20 +59,6 @@ public class util {
         }
     }
 
-    @NonNull
-    static public String LevelToKorean(int level) {
-        switch (level) {
-            case 0:
-                return "낮음";
-            case 1:
-                return "보통";
-            case 2:
-                return "높음";
-            default:
-                return "짱쎔";
-        }
-    }
-    
     static public void CopyAsset(@NonNull Context ctx, String assetPath, String copyPath) {
         try{
             // 원본 asset 위치

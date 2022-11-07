@@ -76,24 +76,21 @@ public class takePhoto extends Fragment {
         View view = inflater.inflate(R.layout.fragment_take_photo, container, false);
 
         imageView = view.findViewById(R.id.picture);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFullScreenImage) {
-                    isFullScreenImage = false;
-                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-                    imageView.setAdjustViewBounds(true);
+        imageView.setOnClickListener(v -> {
+            if (isFullScreenImage) {
+                isFullScreenImage = false;
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                imageView.setAdjustViewBounds(true);
 
-                    float scale = getResources().getDisplayMetrics().density;
-                    int paddingDP = (int) (20*scale + 0.5f);
-                    imageView.setPadding(paddingDP, paddingDP, paddingDP, paddingDP);
-                } else {
-                    isFullScreenImage = true;
-                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
-                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                float scale = getResources().getDisplayMetrics().density;
+                int paddingDP = (int) (20*scale + 0.5f);
+                imageView.setPadding(paddingDP, paddingDP, paddingDP, paddingDP);
+            } else {
+                isFullScreenImage = true;
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-                    imageView.setPadding(0, 0, 0, 0);
-                }
+                imageView.setPadding(0, 0, 0, 0);
             }
         });
 
