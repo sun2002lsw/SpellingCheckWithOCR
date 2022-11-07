@@ -25,6 +25,9 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.File;
 
 import OCR.OCR_tesseract;
+import checkSpelling.Korean_saramin;
+import checkSpelling.SpellingCheckEngine;
+import checkSpelling.SpellingCheckEngineMgr;
 import helper.util;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
 
     private File picture;
+    
     private OCR_tesseract tesseract;
     private String ocrLanguage = "kor";
-    private String menuSelectLang;
+    private String ocrMenuSelectedLang;
+    
     private String extractedString;
+    private SpellingCheckEngineMgr spellingCheckEngineMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         // 대망의 OCR 엔진
         tesseract = new OCR_tesseract();
         tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
+
+        // 맞춤법 검사기 등록
+        spellingCheckEngineMgr.Init();
     }
 
     @Override
@@ -123,16 +132,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void showOptionMenu() {
         final String[] languages = { "한글", "영어" };
-        menuSelectLang = languages[0];
+        ocrMenuSelectedLang = languages[0];
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("어떤 글자를 읽을지 선택");
-        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> menuSelectLang = languages[which]);
+        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> ocrMenuSelectedLang = languages[which]);
 
         builder.setPositiveButton("선택", (dialog, which) -> {
-            String selectLang = util.KoreanToLanguageCode(menuSelectLang);
+            String selectLang = util.KoreanToLanguageCode(ocrMenuSelectedLang);
             if (selectLang.equals(ocrLanguage)) {
-                String text = "이미 " + menuSelectLang + " 읽기로 설정중입니다";
+                String text = "이미 " + ocrMenuSelectedLang + " 읽기로 설정중입니다";
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -140,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
             ocrLanguage = selectLang;
             tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
             SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
-            
+
+            spellingCheckEngineMgr.SetLanguageCode(ocrLanguage);
+
             String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기로 설정 되었습니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
             
@@ -224,18 +235,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 촬영한 사진
-    public void SetPicture(File picture) {
-        this.picture = picture;
-    }
-    public File GetPicture() {
-        return picture;
-    }
+    public void SetPicture(File newPicture) { picture = newPicture; }
+    public File GetPicture() { return picture; }
 
     // OCR
     public String GetOcrLanguage() { return ocrLanguage; }
     public OCR_tesseract GetOcrEngine() { return tesseract; }
     
     // 추출된 문자열
-    public void SetExtractedString(String str) { this.extractedString = str; }
-    public String GetExtractedString() { return this.extractedString; }
+    public void SetExtractedString(String str) { extractedString = str; }
+    public String GetExtractedString() { return extractedString; }
+
+    // 맞춤법 검사기
+    public SpellingCheckEngine GetSpellingCheckEngine() { return spellingCheckEngineMgr.GetEngine(ocrLanguage); }
 }

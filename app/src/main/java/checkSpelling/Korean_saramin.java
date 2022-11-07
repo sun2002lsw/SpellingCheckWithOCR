@@ -13,8 +13,9 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Korean_saramin {
+public class Korean_saramin implements SpellingCheckEngine {
 
+    @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
         Document doc;
         try {
