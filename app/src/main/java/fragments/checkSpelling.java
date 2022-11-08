@@ -37,7 +37,11 @@ public class checkSpelling extends Fragment {
         }
 
         String extractedString = util.MainActivity(checkSpelling.this).GetExtractedString();
-        
+        if (extractedString.isEmpty()) {
+            util.MainActivity(this).EnableTab(0);
+            return view;
+        }
+
         // UI 설정
         TextView textView = view.findViewById(R.id.originalTextView);
         textView.setMovementMethod(new ScrollingMovementMethod());

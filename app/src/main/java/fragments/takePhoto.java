@@ -81,7 +81,6 @@ public class takePhoto extends Fragment {
         imageView = view.findViewById(R.id.picture);
         imageView.setOnClickListener(v -> {
             if (takePhotoBtn.isEnabled()) {
-                Toast.makeText(getContext(), "확대할 사진이 없어요...", Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -35,7 +35,7 @@ public class extractString extends Fragment {
 
     File picture;
     ImageView imageView;
-    ProgressBar progressBar;
+    ProgressBar progressBar, progressCircle;
     TextView textView;
     boolean isLargeTextView;
     Dialog textEditDialog;
@@ -60,10 +60,23 @@ public class extractString extends Fragment {
         imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
 
         progressBar = view.findViewById(R.id.OCRprogressBar);
+        progressCircle = view.findViewById(R.id.OCRprogress);
         
         textView = view.findViewById(R.id.extractedString);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        textView.setOnClickListener(v -> Toast.makeText(getContext(), "아직 사진을 읽는 중입니다", Toast.LENGTH_SHORT).show());
+        textView.setOnClickListener(v -> {
+            if (isLargeTextView) {
+                isLargeTextView = false;
+                ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
+            } else {
+                isLargeTextView = true;
+                ConstraintLayout layout = view.findViewById(R.id.textLayout);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            util.MainActivity(extractString.this).SetSwipeEnable(!isLargeTextView);
+        });
 
         abortOCR = view.findViewById(R.id.abortOCR);
         abortOCR.setBackgroundColor(Color.RED);
@@ -94,7 +107,6 @@ public class extractString extends Fragment {
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         picture = util.MainActivity(this).GetPicture();
         if (picture == null) {
-            Toast.makeText(getContext(), "사진을 찍어주세요", Toast.LENGTH_SHORT).show();
             util.MainActivity(this).EnableTab(0);
             return view;
         }
@@ -108,7 +120,7 @@ public class extractString extends Fragment {
         // 이미 문자열을 추출했으면, 그대로 출력
         String extractedString = util.MainActivity(extractString.this).GetExtractedString();
         if (!extractedString.isEmpty()) {
-            afterOCR(activity, view, extractedString);
+            afterOCR(activity, extractedString);
             return view;
         }
         
@@ -150,25 +162,12 @@ public class extractString extends Fragment {
 
         // 작업 성공
         util.MainActivity(extractString.this).SetExtractedString(extractedString);
-        afterOCR(activity, view, extractedString);
+        afterOCR(activity, extractedString);
     }
 
-    private void afterOCR(@NonNull FragmentActivity activity, View view, String extractedString) {
+    private void afterOCR(@NonNull FragmentActivity activity, String extractedString) {
         activity.runOnUiThread(() -> {
             textView.setText(extractedString);
-            textView.setOnClickListener(v -> {
-                if (isLargeTextView) {
-                    isLargeTextView = false;
-                    ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
-                } else {
-                    isLargeTextView = true;
-                    ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                }
-
-                util.MainActivity(extractString.this).SetSwipeEnable(!isLargeTextView);
-            });
 
             // ocr 중단 버튼 사라짐
             abortOCR.setEnabled(false);
@@ -184,7 +183,9 @@ public class extractString extends Fragment {
             checkSpelling.setTextColor(Color.BLACK);
             checkSpelling.setBackgroundColor(Color.GREEN);
 
+            // 진행도 완료 처리
             progressBar.setProgress(100);
+            progressCircle.setVisibility(View.GONE);
         });
     }
     
