@@ -192,7 +192,7 @@ public class extractString extends Fragment {
         EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
         editTextView.setText(textView.getText().toString());
 
-        textEditDialog.show();
         textEditDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        textEditDialog.show();
     }
 }

@@ -83,12 +83,12 @@ public class checkSpelling extends Fragment {
                 for (int i = 0; i < wrongWordInfos.size(); i ++) {
                     checkedStr.append(makeWrongWordCheckStr(i, wrongWordInfos.get(i)));
                 }
+                checkedStr.append("끝");
             } catch (Exception e) {
                 checkedStr = new StringBuilder(e.toString());
             }
 
             afterSpellingCheck(view, activity, checkedStr.toString());
-
         }).start();
 
         return view;
