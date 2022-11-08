@@ -46,11 +46,11 @@ public class checkSpelling extends Fragment {
             if (isLargeOriginalView) {
                 isLargeOriginalView = false;
                 ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
             }else {
                 isLargeOriginalView = true;
                 ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
             util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeOriginalView);
@@ -62,11 +62,11 @@ public class checkSpelling extends Fragment {
             if (isLargeCheckView) {
                 isLargeCheckView = false;
                 ConstraintLayout layout = view.findViewById(R.id.spellingCheckLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
             }else {
                 isLargeCheckView = true;
                 ConstraintLayout layout = view.findViewById(R.id.spellingCheckLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
             util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeCheckView);
@@ -97,7 +97,7 @@ public class checkSpelling extends Fragment {
     private void afterSpellingCheck(@NonNull View view, @NonNull FragmentActivity activity, @NonNull String checkedStr) {
         ProgressBar progressCircle = view.findViewById(R.id.checkSpellingProgress);
         if (checkedStr.isEmpty()) {
-            checkedStr = "고칠 부분이 없습니다~ 대단합니다!";
+            checkedStr = "※ 고칠 부분이 없습니다~ 대단해요!";
         }
 
         String finalCheckedStr = checkedStr;

@@ -75,6 +75,9 @@ public class takePhoto extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_take_photo, container, false);
 
+        float scale = getResources().getDisplayMetrics().density;
+        int paddingDP = (int) (20*scale + 0.5f);
+
         imageView = view.findViewById(R.id.picture);
         imageView.setOnClickListener(v -> {
             if (takePhotoBtn.isEnabled()) {
@@ -84,18 +87,15 @@ public class takePhoto extends Fragment {
 
             if (isFullScreenImage) {
                 isFullScreenImage = false;
-                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-                imageView.setAdjustViewBounds(true);
-
-                float scale = getResources().getDisplayMetrics().density;
-                int paddingDP = (int) (20*scale + 0.5f);
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 6));
                 imageView.setPadding(paddingDP, paddingDP, paddingDP, paddingDP);
+                imageView.setAdjustViewBounds(true);
             } else {
                 isFullScreenImage = true;
-                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
                 imageView.setPadding(0, 0, 0, 0);
+                imageView.setAdjustViewBounds(true);
             }
         });
 

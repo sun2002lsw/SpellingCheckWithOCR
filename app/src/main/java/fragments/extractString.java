@@ -65,6 +65,18 @@ public class extractString extends Fragment {
         textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setOnClickListener(v -> Toast.makeText(getContext(), "아직 사진을 읽는 중입니다", Toast.LENGTH_SHORT).show());
 
+        abortOCR = view.findViewById(R.id.abortOCR);
+        abortOCR.setBackgroundColor(Color.RED);
+
+        editText = view.findViewById(R.id.editText);
+        editText.setEnabled(false);
+        editText.setOnClickListener(v -> openTextEditDialog());
+
+        checkSpelling = view.findViewById(R.id.checkSpelling);
+        checkSpelling.setEnabled(false);
+        checkSpelling.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
+
+        // 글 수정 팝업창 설정
         textEditDialog = new Dialog(ctx);
         textEditDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         textEditDialog.setContentView(R.layout.dialog_edit_text);
@@ -78,18 +90,7 @@ public class extractString extends Fragment {
 
             textEditDialog.dismiss();
         });
-
-        abortOCR = view.findViewById(R.id.abortOCR);
-        abortOCR.setBackgroundColor(Color.RED);
-
-        editText = view.findViewById(R.id.editText);
-        editText.setEnabled(false);
-        editText.setOnClickListener(v -> openTextEditDialog());
-
-        checkSpelling = view.findViewById(R.id.checkSpelling);
-        checkSpelling.setEnabled(false);
-        checkSpelling.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
-
+        
         // 찍은 사진 가져오기. 사진이 없으면 이전 탭으로 복귀
         picture = util.MainActivity(this).GetPicture();
         if (picture == null) {
@@ -159,11 +160,11 @@ public class extractString extends Fragment {
                 if (isLargeTextView) {
                     isLargeTextView = false;
                     ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
                 } else {
                     isLargeTextView = true;
                     ConstraintLayout layout = view.findViewById(R.id.textLayout);
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (float) 0.001));
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 }
 
                 util.MainActivity(extractString.this).SetSwipeEnable(!isLargeTextView);

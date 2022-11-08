@@ -124,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
             showLanguageMenu();
         } else if (itemId == R.id.menu_info) {
             showInfoMenu();
-        } else {
-            Toast.makeText(MainActivity.this, "무슨 메뉴를 누른거지?", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

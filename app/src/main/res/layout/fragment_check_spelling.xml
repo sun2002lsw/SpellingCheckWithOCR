@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/originalViewLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="20dp">
 
@@ -33,7 +33,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/spellingCheckLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="20dp">
 
@@ -53,10 +53,10 @@
             android:layout_height="0dp"
             android:background="@drawable/bg_edit_text"
             android:ems="10"
+            android:fadeScrollbars="false"
             android:gravity="top"
             android:scrollbarSize="10dp"
             android:scrollbars="vertical"
-            android:fadeScrollbars="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
