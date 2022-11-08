@@ -1,6 +1,7 @@
 package OCR;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -26,7 +27,9 @@ public class OCR_tesseract {
 
         File tessDataDir = new File(dataDirPath);
         if(!tessDataDir.exists()) {
-            tessDataDir.mkdirs();
+            if (!tessDataDir.mkdirs()) {
+                Toast.makeText(ctx, "tesseract 폴더 생성을 실패했습니다", Toast.LENGTH_LONG).show();
+            }
         }
 
         File dataFile = new File(dataFilePath);
@@ -45,7 +48,7 @@ public class OCR_tesseract {
         tessAPI.init(dataPath, languageCode);
     }
 
-    public String ProcessOCR(File picture) throws Exception {
+    public String ProcessOCR(File picture) {
         if (tessAPI == null)
             if (dataPath.isEmpty() || languageCode.isEmpty()) {
                 return "어떤 언어로 할지 선택 해주세요";

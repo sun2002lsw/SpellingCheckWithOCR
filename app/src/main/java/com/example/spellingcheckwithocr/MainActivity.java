@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
+import java.util.Arrays;
 
 import OCR.OCR_tesseract;
 import checkSpelling.SpellingCheckEngine;
@@ -119,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.setting) {
-            showOptionMenu();
-        } else if (itemId == R.id.info) {
+        if (itemId == R.id.menu_setting) {
+            showLanguageMenu();
+        } else if (itemId == R.id.menu_info) {
             showInfoMenu();
         } else {
             Toast.makeText(MainActivity.this, "무슨 메뉴를 누른거지?", Toast.LENGTH_SHORT).show();
@@ -130,13 +131,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showOptionMenu() {
+    private void showLanguageMenu() {
         final String[] languages = { "한글", "영어" };
-        ocrMenuSelectedLang = languages[0];
+
+        ocrMenuSelectedLang = util.LanguageCodeToKorean(ocrLanguage);
+        int idx = Arrays.asList(languages).indexOf(ocrMenuSelectedLang);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("어떤 글자를 읽을지 선택");
-        builder.setSingleChoiceItems(languages, 0, (dialog, which) -> ocrMenuSelectedLang = languages[which]);
+        builder.setSingleChoiceItems(languages, idx, (dialog, which) -> ocrMenuSelectedLang = languages[which]);
 
         builder.setPositiveButton("선택", (dialog, which) -> {
             String selectLang = util.KoreanToLanguageCode(ocrMenuSelectedLang);
@@ -252,5 +255,5 @@ public class MainActivity extends AppCompatActivity {
     public String GetExtractedString() { return extractedString; }
 
     // 맞춤법 검사기
-    public SpellingCheckEngine GetSpellingCheckEngine() { return spellingCheckEngineMgr.GetEngine(ocrLanguage); }
+    public SpellingCheckEngine GetSpellingCheckEngine() { return spellingCheckEngineMgr.GetEngine(); }
 }
