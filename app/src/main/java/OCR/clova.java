@@ -1,8 +1,6 @@
 package OCR;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -13,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class clova implements engine {
 
     final private AtomicBoolean isStopped = new AtomicBoolean();
-    private String invokeURL;
+    private String invokeURL = "";
 
     @Override
     public boolean NeedInvokeURL() { return invokeURL.isEmpty(); }
@@ -36,10 +34,17 @@ public class clova implements engine {
 
     @Override
     public void SetProgressbar(@NonNull ProgressBar progressBar) {
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 90);
-        animation.setDuration(5000); // 5 second
-        animation.setInterpolator(new LinearInterpolator());
-        animation.start();
+        new Thread(() -> {
+            for (int fakeProgress = 0; fakeProgress < 90; fakeProgress++) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                progressBar.setProgress(fakeProgress);
+            }
+        }).start();
     }
 
     @Override
@@ -53,13 +58,7 @@ public class clova implements engine {
             return "";
         }
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return "result";
     }
 
     @Override

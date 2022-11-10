@@ -10,11 +10,11 @@ public class engineMgr {
     HashMap<String, engine> engineByName;
 
     public void Init(@NonNull String engineName) {
-        engineByName = new HashMap<>();
         curEngine = engineName;
 
-        engineByName.put(tesseract.class.getName(), new tesseract());
-        engineByName.put(clova.class.getName(), new clova());
+        engineByName = new HashMap<>();
+        engineByName.put(tesseract.class.getSimpleName(), new tesseract());
+        engineByName.put(clova.class.getSimpleName(), new clova());
     }
 
     public void SetEngine(@NonNull String engineName) { curEngine = engineName; }
