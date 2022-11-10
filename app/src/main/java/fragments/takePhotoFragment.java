@@ -3,7 +3,9 @@ package fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -23,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -123,7 +126,15 @@ public class takePhotoFragment extends Fragment {
         // 글자 읽기 버튼. 처음에는 비활성화하고 AfterTakePicture 이후 활성화. 누르면 다음 탭으로 진행
         extractStringBnt = view.findViewById(R.id.extractString);
         extractStringBnt.setEnabled(false);
-        extractStringBnt.setOnClickListener(v -> util.MainActivity(takePhotoFragment.this).EnableTab(1));
+        extractStringBnt.setOnClickListener(v -> {
+            OCR.engine ocrEngine = util.MainActivity(takePhotoFragment.this).GetOcrEngine();
+            if (ocrEngine.NeedInvokeURL()) {
+                showOcrInvokeUrlInput(ocrEngine);
+                return;
+            }
+
+            util.MainActivity(takePhotoFragment.this).EnableTab(1);
+        });
 
         // 사진을 찍었으면 다 필요없고 그걸로 처리
         File picture = util.MainActivity(this).GetPicture();
@@ -239,5 +250,36 @@ public class takePhotoFragment extends Fragment {
                 Log.d("warning", "기존 사진 파일 삭제를 실패했습니다");
             }
         }
+    }
+
+    private void showOcrInvokeUrlInput(OCR.engine ocrEngine) {
+        final EditText editText = new EditText(getContext());
+
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("API 사용을 위한 URL을 입력해 주세요")
+                .setView(editText)
+                .setPositiveButton("입력", null)
+                .setNegativeButton("나가기", (dialog1, which) -> {})
+                .setCancelable(true)
+                .create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            
+            button.setOnClickListener(view -> {
+                String url = editText.getText().toString();
+                if (ocrEngine.IsValidInvokeURL(url)) {
+                    ocrEngine.SetInvokeURL(url);
+
+                    Toast.makeText(getContext(), "URL이 설정 되었습니다", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    return;
+                }
+                
+                Toast.makeText(getContext(), "유효하지 않은 URL입니다", Toast.LENGTH_SHORT).show();
+            });
+        });
+
+        dialog.show();
     }
 }
