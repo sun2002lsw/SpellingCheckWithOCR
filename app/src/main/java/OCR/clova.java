@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class clova implements engine {
 
-    private AtomicBoolean isStopped = new AtomicBoolean();
+    final private AtomicBoolean isStopped = new AtomicBoolean();
 
     @Override
     public void SetLanguage(@NonNull Context ctx, String language) {

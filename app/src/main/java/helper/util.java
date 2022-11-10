@@ -61,10 +61,13 @@ public class util {
     }
 
     @Nullable
-    static public OCR.engine GetOcrEngineByName(String engineName) {
-        if (engineName == OCR.tesseract.class.getSimpleName()) {
+    static public OCR.engine GetOcrEngineByName(@NonNull String engineName) {
+        final String tesseract = OCR.tesseract.class.getSimpleName();
+        final String clova = OCR.clova.class.getSimpleName();
+
+        if (engineName.equals(tesseract)) {
             return new OCR.tesseract();
-        } else if (engineName == OCR.clova.class.getSimpleName()) {
+        } else if (engineName.equals(clova)) {
             return new OCR.clova();
         }
 
