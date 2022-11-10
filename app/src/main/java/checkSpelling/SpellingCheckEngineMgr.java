@@ -12,7 +12,7 @@ public class SpellingCheckEngineMgr {
         curLanguageCode = "kor";
 
         engineByLanguage.put("kor", new Korean_saramin());
-        engineByLanguage.put("eng", new English_test());
+        engineByLanguage.put("eng", new English_quillbot());
     }
 
     public void SetLanguageCode(String languageCode) { curLanguageCode = languageCode; }

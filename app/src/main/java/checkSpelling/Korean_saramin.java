@@ -18,9 +18,10 @@ public class Korean_saramin implements SpellingCheckEngine {
     @NonNull
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
+        String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
+
         Document doc;
         try {
-            String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
             doc = Jsoup.connect(url).ignoreContentType(true).data("content", sentence).post();
         } catch (IOException e) {
             throw new Exception("사람인 홈페이지 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
