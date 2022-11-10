@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
 
-public class English_quillbot implements SpellingCheckEngine {
+public class English_quillbot implements engine {
 
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {

@@ -18,11 +18,10 @@ import com.example.spellingcheckwithocr.R;
 
 import java.util.ArrayList;
 
-import checkSpelling.SpellingCheckEngine;
 import checkSpelling.WrongWordInfo;
 import helper.util;
 
-public class checkSpelling extends Fragment {
+public class checkSpellingFragment extends Fragment {
 
     boolean isLargeOriginalView;
     boolean isLargeCheckView;
@@ -36,7 +35,7 @@ public class checkSpelling extends Fragment {
             return view;
         }
 
-        String extractedString = util.MainActivity(checkSpelling.this).GetExtractedString();
+        String extractedString = util.MainActivity(checkSpellingFragment.this).GetExtractedString();
         if (extractedString.isEmpty()) {
             util.MainActivity(this).EnableTab(0);
             return view;
@@ -57,7 +56,7 @@ public class checkSpelling extends Fragment {
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
-            util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeOriginalView);
+            util.MainActivity(checkSpellingFragment.this).SetSwipeEnable(!isLargeOriginalView);
         });
 
         spellingCheckView = view.findViewById(R.id.spellingCheckTextView);
@@ -73,13 +72,13 @@ public class checkSpelling extends Fragment {
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
-            util.MainActivity(checkSpelling.this).SetSwipeEnable(!isLargeCheckView);
+            util.MainActivity(checkSpellingFragment.this).SetSwipeEnable(!isLargeCheckView);
         });
 
         // 맞춤법 검사
         new Thread(() -> {
             ArrayList<WrongWordInfo> wrongWordInfos;
-            SpellingCheckEngine checkEngine = util.MainActivity(checkSpelling.this).GetSpellingCheckEngine();
+            checkSpelling.engine checkEngine = util.MainActivity(checkSpellingFragment.this).GetSpellingCheckEngine();
 
             StringBuilder checkedStr = new StringBuilder();
             try {

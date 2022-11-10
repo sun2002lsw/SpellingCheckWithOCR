@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import helper.util;
 
-public class takePhoto extends Fragment {
+public class takePhotoFragment extends Fragment {
 
     private File newTakePicture;
     private ImageView imageView;
@@ -62,12 +62,12 @@ public class takePhoto extends Fragment {
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     // 사진을 새로 찍은 시점에서 문자열 다시 추출 해야 함
-                    util.MainActivity(takePhoto.this).SetPicture(newTakePicture);
-                    util.MainActivity(takePhoto.this).SetExtractedString("");
+                    util.MainActivity(takePhotoFragment.this).SetPicture(newTakePicture);
+                    util.MainActivity(takePhotoFragment.this).SetExtractedString("");
 
                     // 지금 탭을 다시 호출해서 onCreateView로 다시 만듬
                     Handler uiHandler = new Handler(Looper.getMainLooper());
-                    uiHandler.post(() -> util.MainActivity(takePhoto.this).EnableTab(0));
+                    uiHandler.post(() -> util.MainActivity(takePhotoFragment.this).EnableTab(0));
                 }
             });
 
@@ -123,7 +123,7 @@ public class takePhoto extends Fragment {
         // 글자 읽기 버튼. 처음에는 비활성화하고 AfterTakePicture 이후 활성화. 누르면 다음 탭으로 진행
         extractStringBnt = view.findViewById(R.id.extractString);
         extractStringBnt.setEnabled(false);
-        extractStringBnt.setOnClickListener(v -> util.MainActivity(takePhoto.this).EnableTab(1));
+        extractStringBnt.setOnClickListener(v -> util.MainActivity(takePhotoFragment.this).EnableTab(1));
 
         // 사진을 찍었으면 다 필요없고 그걸로 처리
         File picture = util.MainActivity(this).GetPicture();

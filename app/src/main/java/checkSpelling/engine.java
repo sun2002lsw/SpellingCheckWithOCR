@@ -2,6 +2,6 @@ package checkSpelling;
 
 import java.util.ArrayList;
 
-public interface SpellingCheckEngine {
+public interface engine {
     ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception;
 }

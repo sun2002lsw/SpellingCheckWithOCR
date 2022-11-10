@@ -2,14 +2,14 @@ package checkSpelling;
 
 import java.util.HashMap;
 
-public class SpellingCheckEngineMgr {
+public class engineMgr {
 
     String curLanguageCode;
-    HashMap<String, SpellingCheckEngine> engineByLanguage;
+    HashMap<String, engine> engineByLanguage;
 
-    public void Init() {
+    public void Init(String languageCode) {
         engineByLanguage = new HashMap<>();
-        curLanguageCode = "kor";
+        curLanguageCode = languageCode;
 
         engineByLanguage.put("kor", new Korean_saramin());
         engineByLanguage.put("eng", new English_quillbot());
@@ -17,5 +17,5 @@ public class SpellingCheckEngineMgr {
 
     public void SetLanguageCode(String languageCode) { curLanguageCode = languageCode; }
 
-    public SpellingCheckEngine GetEngine() { return engineByLanguage.get(curLanguageCode); }
+    public engine GetEngine() { return engineByLanguage.get(curLanguageCode); }
 }

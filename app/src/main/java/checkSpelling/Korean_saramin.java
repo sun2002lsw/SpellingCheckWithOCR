@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Korean_saramin implements SpellingCheckEngine {
+public class Korean_saramin implements engine {
 
     @NonNull
     @Override

@@ -25,8 +25,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.File;
 import java.util.Arrays;
 
-import checkSpelling.SpellingCheckEngine;
-import checkSpelling.SpellingCheckEngineMgr;
 import helper.util;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String ocrMenuSelectedLang;
     
     private String extractedString;
-    private SpellingCheckEngineMgr spellingCheckEngineMgr;
+    private checkSpelling.engineMgr checkEngineMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
 
         // 맞춤법 검사기 등록
-        spellingCheckEngineMgr = new SpellingCheckEngineMgr();
-        spellingCheckEngineMgr.Init();
+        checkEngineMgr = new checkSpelling.engineMgr();
+        checkEngineMgr.Init(ocrLanguage);
     }
 
     @Override
@@ -153,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
             SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
 
-            spellingCheckEngineMgr.SetLanguageCode(ocrLanguage);
+            checkEngineMgr.SetLanguageCode(ocrLanguage);
 
             String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기로 설정 되었습니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
@@ -260,5 +258,5 @@ public class MainActivity extends AppCompatActivity {
     public String GetExtractedString() { return extractedString; }
 
     // 맞춤법 검사기
-    public SpellingCheckEngine GetSpellingCheckEngine() { return spellingCheckEngineMgr.GetEngine(); }
+    public checkSpelling.engine GetSpellingCheckEngine() { return checkEngineMgr.GetEngine(); }
 }

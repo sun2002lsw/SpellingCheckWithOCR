@@ -29,7 +29,7 @@ import java.io.File;
 
 import helper.util;
 
-public class extractString extends Fragment {
+public class extractStringFragment extends Fragment {
 
     File picture;
     ImageView imageView;
@@ -55,7 +55,7 @@ public class extractString extends Fragment {
 
         // 각 UI 설정
         imageView = view.findViewById(R.id.pictureForOCR);
-        imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
+        imageView.setOnClickListener(v -> util.MainActivity(extractStringFragment.this).MoveTab(0));
 
         progressBar = view.findViewById(R.id.OCRprogressBar);
         progressBar.setProgress(0);
@@ -75,7 +75,7 @@ public class extractString extends Fragment {
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
-            util.MainActivity(extractString.this).SetSwipeEnable(!isLargeTextView);
+            util.MainActivity(extractStringFragment.this).SetSwipeEnable(!isLargeTextView);
         });
 
         abortOCR = view.findViewById(R.id.abortOCR);
@@ -87,7 +87,7 @@ public class extractString extends Fragment {
 
         checkSpelling = view.findViewById(R.id.checkSpelling);
         checkSpelling.setEnabled(false);
-        checkSpelling.setOnClickListener(v -> util.MainActivity(extractString.this).EnableTab(2));
+        checkSpelling.setOnClickListener(v -> util.MainActivity(extractStringFragment.this).EnableTab(2));
 
         // 글 수정 팝업창 설정
         textEditDialog = new Dialog(ctx);
@@ -98,7 +98,7 @@ public class extractString extends Fragment {
             EditText editTextView = textEditDialog.findViewById(R.id.largeTextViewForEdit);
             String editedText = editTextView.getText().toString();
 
-            util.MainActivity(extractString.this).SetExtractedString(editedText);
+            util.MainActivity(extractStringFragment.this).SetExtractedString(editedText);
             activity.runOnUiThread(() -> textView.setText(editedText));
 
             textEditDialog.dismiss();
@@ -118,7 +118,7 @@ public class extractString extends Fragment {
         }).start();
 
         // 이미 문자열을 추출했으면, 그대로 출력
-        String extractedString = util.MainActivity(extractString.this).GetExtractedString();
+        String extractedString = util.MainActivity(extractStringFragment.this).GetExtractedString();
         if (!extractedString.isEmpty()) {
             afterOCR(activity, extractedString);
             return view;
@@ -148,18 +148,18 @@ public class extractString extends Fragment {
         }
 
         // 작업 도중에 뭔가 다른짓해서 현재 Fragment 파괴됨
-        if (util.MainActivity(extractString.this) == null) {
+        if (util.MainActivity(extractStringFragment.this) == null) {
             return;
         }
 
         // 작업이 중단된 경우, 첫 화면으로 복귀
         if (extractedString == null || extractedString.isEmpty()) {
-            activity.runOnUiThread(() -> util.MainActivity(extractString.this).EnableTab(0));
+            activity.runOnUiThread(() -> util.MainActivity(extractStringFragment.this).EnableTab(0));
             return;
         }
 
         // 작업 성공
-        util.MainActivity(extractString.this).SetExtractedString(extractedString);
+        util.MainActivity(extractStringFragment.this).SetExtractedString(extractedString);
         afterOCR(activity, extractedString);
     }
 

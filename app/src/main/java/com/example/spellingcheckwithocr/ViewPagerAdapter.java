@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import fragments.checkSpelling;
-import fragments.extractString;
-import fragments.takePhoto;
+import fragments.checkSpellingFragment;
+import fragments.extractStringFragment;
+import fragments.takePhotoFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -20,11 +20,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return new extractString();
+                return new extractStringFragment();
             case 2:
-                return new checkSpelling();
+                return new checkSpellingFragment();
             default:
-                return new takePhoto();
+                return new takePhotoFragment();
         }
     }
 
