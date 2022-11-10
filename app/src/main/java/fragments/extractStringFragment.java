@@ -137,7 +137,10 @@ public class extractStringFragment extends Fragment {
         ocrEngine.SetProgressbar(progressBar);
 
         // OCR 중단 버튼
-        abortOCR.setOnClickListener(v -> ocrEngine.StopOCR());
+        abortOCR.setOnClickListener(v -> {
+            ocrEngine.StopOCR();
+            activity.runOnUiThread(() -> util.MainActivity(extractStringFragment.this).EnableTab(0));
+        });
 
         // OCR
         String extractedString = null;
@@ -152,9 +155,8 @@ public class extractStringFragment extends Fragment {
             return;
         }
 
-        // 작업이 중단된 경우, 첫 화면으로 복귀
+        // 작업이 중단됨
         if (extractedString == null || extractedString.isEmpty()) {
-            activity.runOnUiThread(() -> util.MainActivity(extractStringFragment.this).EnableTab(0));
             return;
         }
 

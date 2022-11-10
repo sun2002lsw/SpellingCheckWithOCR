@@ -16,6 +16,7 @@ public class engineMgr {
     }
 
     public void SetLanguage(String language) { curLanguage = language; }
+    public String GetCurLang() { return curLanguage; }
 
     public engine GetEngine() { return engineByLanguage.get(curLanguage); }
 }

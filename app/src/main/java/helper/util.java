@@ -60,20 +60,6 @@ public class util {
         }
     }
 
-    @Nullable
-    static public OCR.engine GetOcrEngineByName(@NonNull String engineName) {
-        final String tesseract = OCR.tesseract.class.getSimpleName();
-        final String clova = OCR.clova.class.getSimpleName();
-
-        if (engineName.equals(tesseract)) {
-            return new OCR.tesseract();
-        } else if (engineName.equals(clova)) {
-            return new OCR.clova();
-        }
-
-        return null;
-    }
-
     static public void CopyAsset(@NonNull Context ctx, String assetPath, String copyPath) {
         try{
             // 원본 asset 위치

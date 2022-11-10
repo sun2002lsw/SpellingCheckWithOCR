@@ -19,7 +19,16 @@ public class tesseract implements engine {
     private TessBaseAPI tessAPI;
 
     @Override
-    public void SetLanguage(@NonNull Context ctx, String language) {
+    public boolean NeedInvokeURL() { return false; }
+
+    @Override
+    public void SetInvokeURL(@NonNull String url) {}
+
+    @Override
+    public boolean IsValidInvokeURL(@NonNull String url) { return true; }
+
+    @Override
+    public void SetLanguage(@NonNull Context ctx, @NonNull String language) {
         this.dataPath = ctx.getFilesDir().getAbsolutePath();
         this.language = language;
         
@@ -42,7 +51,7 @@ public class tesseract implements engine {
     }
 
     @Override
-    public void SetProgressbar(ProgressBar progressBar) {
+    public void SetProgressbar(@NonNull ProgressBar progressBar) {
         if (dataPath.isEmpty() || language.isEmpty()) {
             return;
         }
@@ -54,7 +63,8 @@ public class tesseract implements engine {
     }
 
     @Override
-    public String StartOCR(File picture) {
+    @NonNull
+    public String StartOCR(@NonNull File picture) {
         if (tessAPI == null)
             if (dataPath.isEmpty() || language.isEmpty()) {
                 return "어떤 언어로 할지 선택 해주세요";

@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private File picture;
     
-    private OCR.engine ocrEngine;
-    private String ocrLanguage = "kor";
+    private OCR.engineMgr ocrEngineMgr;
     private String menuSelectLang;
     private String menuSelectEngine;
     
@@ -101,12 +100,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // OCR 엔진. 일단 무료인 tesseract 사용
-        ocrEngine = new OCR.tesseract();
-        ocrEngine.SetLanguage(MainActivity.this, ocrLanguage);
+        ocrEngineMgr = new OCR.engineMgr();
+        ocrEngineMgr.Init(OCR.tesseract.class.getSimpleName());
+        ocrEngineMgr.GetEngine().SetLanguage(MainActivity.this, "kor");
 
-        // 맞춤법 검사기 등록
+        // 맞춤법 검사기 등록. 일단 한글 설정
         checkEngineMgr = new checkSpelling.engineMgr();
-        checkEngineMgr.Init(ocrLanguage);
+        checkEngineMgr.Init("kor");
     }
 
     @Override
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("어떤 글자를 읽을지 선택");
 
-        String curLanguage = util.LanguageCodeToKorean(ocrLanguage);
+        String curLanguage = util.LanguageCodeToKorean(checkEngineMgr.GetCurLang());
         int idx = Arrays.asList(languages).indexOf(curLanguage);
         menuSelectLang = languages[idx];
         builder.setSingleChoiceItems(languages, idx, (dialog, which) -> menuSelectLang = languages[which]);
@@ -149,9 +149,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String selectLang = util.KoreanToLanguageCode(menuSelectLang);
-            ocrLanguage = selectLang;
             checkEngineMgr.SetLanguage(selectLang);
-            ocrEngine.SetLanguage(MainActivity.this, selectLang);
+            ocrEngineMgr.GetEngine().SetLanguage(MainActivity.this, selectLang);
             SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
 
             String text = menuSelectLang + " 읽기로 설정 되었습니다";
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("OCR 엔진 선택");
 
-        String curOcrEngine = ocrEngine.getClass().getSimpleName();
+        String curOcrEngine = ocrEngineMgr.GetEngine().getClass().getSimpleName();
         int idx = Arrays.asList(ocrEngines).indexOf(curOcrEngine);
         menuSelectEngine = ocrEngines[idx];
         builder.setSingleChoiceItems(ocrEngines, idx, (dialog, which) -> menuSelectEngine = ocrEngines[which]);
@@ -191,14 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            OCR.engine newOcrEngine = util.GetOcrEngineByName(menuSelectEngine);
-            if (newOcrEngine == null) {
-                Toast.makeText(MainActivity.this, "엥? 무슨 엔진을 고른거지?", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            ocrEngine = newOcrEngine;
-            ocrEngine.SetLanguage(MainActivity.this, ocrLanguage);
+            ocrEngineMgr.SetEngine(menuSelectEngine);
+            ocrEngineMgr.GetEngine().SetLanguage(MainActivity.this, checkEngineMgr.GetCurLang());
             SetExtractedString(""); // 엔진 변경으로 문자열 다시 추출해야 함
 
             String text = menuSelectEngine + " 엔진으로 설정 되었습니다";
@@ -294,8 +287,8 @@ public class MainActivity extends AppCompatActivity {
     public File GetPicture() { return picture; }
 
     // OCR
-    public String GetOcrLanguage() { return ocrLanguage; }
-    public OCR.engine GetOcrEngine() { return ocrEngine; }
+    public String GetOcrLanguage() { return checkEngineMgr.GetCurLang(); }
+    public OCR.engine GetOcrEngine() { return ocrEngineMgr.GetEngine(); }
     
     // 추출된 문자열
     public void SetExtractedString(String str) { extractedString = str; }
