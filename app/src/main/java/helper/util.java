@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -57,6 +58,17 @@ public class util {
             default:
                 return "WTF";
         }
+    }
+
+    @Nullable
+    static public OCR.engine GetOcrEngineByName(String engineName) {
+        if (engineName == OCR.tesseract.class.getSimpleName()) {
+            return new OCR.tesseract();
+        } else if (engineName == OCR.clova.class.getSimpleName()) {
+            return new OCR.clova();
+        }
+
+        return null;
     }
 
     static public void CopyAsset(@NonNull Context ctx, String assetPath, String copyPath) {

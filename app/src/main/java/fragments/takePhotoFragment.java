@@ -188,8 +188,8 @@ public class takePhotoFragment extends Fragment {
         takePhotoAgainBtn.setBackgroundColor(Color.YELLOW);
 
         // 다음 탭 진행 버튼 등장
-        String languageCode = util.MainActivity(this).GetOcrLanguage();
-        String btnText = util.LanguageCodeToKorean(languageCode) + " 읽기";
+        String language = util.MainActivity(this).GetOcrLanguage();
+        String btnText = util.LanguageCodeToKorean(language) + " 읽기";
 
         extractStringBnt.setEnabled(true);
         extractStringBnt.setText(btnText);

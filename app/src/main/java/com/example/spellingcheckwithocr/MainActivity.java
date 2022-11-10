@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     
     private OCR.engine ocrEngine;
     private String ocrLanguage = "kor";
-    private String ocrMenuSelectedLang;
     
     private String extractedString;
     private checkSpelling.engineMgr checkEngineMgr;
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         // OCR 엔진. 일단 무료인 tesseract 사용
         ocrEngine = new OCR.tesseract();
-        ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
+        ocrEngine.SetLanguage(MainActivity.this, ocrLanguage);
 
         // 맞춤법 검사기 등록
         checkEngineMgr = new checkSpelling.engineMgr();
@@ -132,28 +131,27 @@ public class MainActivity extends AppCompatActivity {
     private void showLanguageMenu() {
         final String[] languages = { "한글", "영어" };
 
-        ocrMenuSelectedLang = util.LanguageCodeToKorean(ocrLanguage);
-        int idx = Arrays.asList(languages).indexOf(ocrMenuSelectedLang);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("어떤 글자를 읽을지 선택");
-        builder.setSingleChoiceItems(languages, idx, (dialog, which) -> ocrMenuSelectedLang = languages[which]);
+
+        String curLanguage = util.LanguageCodeToKorean(ocrLanguage);
+        int idx = Arrays.asList(languages).indexOf(curLanguage);
+        builder.setSingleChoiceItems(languages, idx, (dialog, which) -> {});
 
         builder.setPositiveButton("선택", (dialog, which) -> {
-            String selectLang = util.KoreanToLanguageCode(ocrMenuSelectedLang);
-            if (selectLang.equals(ocrLanguage)) {
-                String text = "이미 " + ocrMenuSelectedLang + " 읽기로 설정중입니다";
+            if (languages[which].equals(curLanguage)) {
+                String text = "이미 " + curLanguage + " 읽기로 설정중입니다";
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
+            String selectLang = util.KoreanToLanguageCode(languages[which]);
             ocrLanguage = selectLang;
-            ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
+            checkEngineMgr.SetLanguage(selectLang);
+            ocrEngine.SetLanguage(MainActivity.this, selectLang);
             SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
 
-            checkEngineMgr.SetLanguageCode(ocrLanguage);
-
-            String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기로 설정 되었습니다";
+            String text = languages[which] + " 읽기로 설정 되었습니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
             
             // 사진 촬영 화면으로 복귀
@@ -161,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.setNegativeButton("취소", (dialog, which) -> {
-            String text = util.LanguageCodeToKorean(ocrLanguage) + " 읽기가 유지 됩니다";
+            String text = curLanguage + " 읽기가 유지 됩니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         });
 
@@ -170,6 +168,48 @@ public class MainActivity extends AppCompatActivity {
 
     // OCR 엔진 고르기
     private void showOcrMenu() {
+        final String[] ocrEngines = {
+            OCR.tesseract.class.getSimpleName(),
+            OCR.clova.class.getSimpleName()
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("OCR 엔진 선택");
+
+        String curOCR = ocrEngine.getClass().getSimpleName();
+        int idx = Arrays.asList(ocrEngines).indexOf(curOCR);
+        builder.setSingleChoiceItems(ocrEngines, idx, (dialog, which) -> {});
+
+        builder.setPositiveButton("선택", (dialog, which) -> {
+            if (ocrEngines[which].equals(curOCR)) {
+                String text = "이미 " + curOCR + " 엔진을 사용중입니다";
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            OCR.engine newOcrEngine = util.GetOcrEngineByName(ocrEngines[which]);
+            if (newOcrEngine == null) {
+                Toast.makeText(MainActivity.this, "엥? 무슨 엔진을 고른거지?", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            ocrEngine = newOcrEngine;
+            ocrEngine.SetLanguage(MainActivity.this, ocrLanguage);
+            SetExtractedString(""); // 엔진 변경으로 문자열 다시 추출해야 함
+
+            String text = ocrEngines[which] + " 엔진으로 설정 되었습니다";
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+
+            // 사진 촬영 화면으로 복귀
+            EnableTab(0);
+        });
+
+        builder.setNegativeButton("취소", (dialog, which) -> {
+            String text = curOCR + " 엔진이 유지 됩니다";
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        });
+
+        builder.show();
     }
 
     // 개발자 정보

@@ -15,17 +15,17 @@ import helper.util;
 public class tesseract implements engine {
 
     private String dataPath;
-    private String languageCode;
+    private String language;
     private TessBaseAPI tessAPI;
 
     @Override
-    public void SetLanguageCode(@NonNull Context ctx, String languageCode) {
+    public void SetLanguage(@NonNull Context ctx, String language) {
         this.dataPath = ctx.getFilesDir().getAbsolutePath();
-        this.languageCode = languageCode;
+        this.language = language;
         
         // 데이터 가져오기
         String dataDirPath = ctx.getFilesDir() + "/tessdata/";
-        String dataFilePath = dataDirPath + languageCode + ".traineddata";
+        String dataFilePath = dataDirPath + language + ".traineddata";
 
         File tessDataDir = new File(dataDirPath);
         if(!tessDataDir.exists()) {
@@ -36,31 +36,31 @@ public class tesseract implements engine {
 
         File dataFile = new File(dataFilePath);
         if(!dataFile.exists()) {
-            String assetPath = "tessdata/" + languageCode + ".traineddata";
+            String assetPath = "tessdata/" + language + ".traineddata";
             util.CopyAsset(ctx, assetPath, dataFilePath);
         }
     }
 
     @Override
     public void SetProgressbar(ProgressBar progressBar) {
-        if (dataPath.isEmpty() || languageCode.isEmpty()) {
+        if (dataPath.isEmpty() || language.isEmpty()) {
             return;
         }
 
         TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
 
         tessAPI = new TessBaseAPI(pn);
-        tessAPI.init(dataPath, languageCode);
+        tessAPI.init(dataPath, language);
     }
 
     @Override
     public String StartOCR(File picture) {
         if (tessAPI == null)
-            if (dataPath.isEmpty() || languageCode.isEmpty()) {
+            if (dataPath.isEmpty() || language.isEmpty()) {
                 return "어떤 언어로 할지 선택 해주세요";
             } else {
                 tessAPI = new TessBaseAPI();
-                tessAPI.init(dataPath, languageCode);
+                tessAPI.init(dataPath, language);
             }
 
         tessAPI.setImage(picture);

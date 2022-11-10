@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 public interface engine {
-    void SetLanguageCode(@NonNull Context ctx, String languageCode);
+    void SetLanguage(@NonNull Context ctx, String language);
     void SetProgressbar(ProgressBar progressBar);
 
     String StartOCR(File picture);
