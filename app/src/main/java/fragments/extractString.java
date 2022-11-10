@@ -24,11 +24,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.spellingcheckwithocr.R;
-import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
 
-import OCR.OCR_tesseract;
 import helper.util;
 
 public class extractString extends Fragment {
@@ -60,7 +58,9 @@ public class extractString extends Fragment {
         imageView.setOnClickListener(v -> util.MainActivity(extractString.this).MoveTab(0));
 
         progressBar = view.findViewById(R.id.OCRprogressBar);
+        progressBar.setProgress(0);
         progressCircle = view.findViewById(R.id.OCRprogress);
+        progressCircle.setVisibility(View.VISIBLE);
         
         textView = view.findViewById(R.id.extractedString);
         textView.setMovementMethod(new ScrollingMovementMethod());
@@ -125,18 +125,16 @@ public class extractString extends Fragment {
         }
         
         // OCR 비동기 진행
-        new Thread(() -> processOCR(activity, view)).start();
+        new Thread(() -> processOCR(activity)).start();
 
         return view;
     }
 
-    private void processOCR(@NonNull FragmentActivity activity, View view) {
-        // OCR 진행에 따른 시각화 처리
-        progressBar.setProgress(0);
-        TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
+    private void processOCR(@NonNull FragmentActivity activity) {
+        OCR.engine ocrEngine = util.MainActivity(this).GetOcrEngine();
 
-        OCR_tesseract ocrEngine = util.MainActivity(this).GetOcrEngine();
-        ocrEngine.SetProgressNotifier(pn);
+        // OCR 진행에 따른 시각화 처리
+        ocrEngine.SetProgressbar(progressBar);
 
         // OCR 중단 버튼
         abortOCR.setOnClickListener(v -> ocrEngine.StopOCR());
@@ -144,7 +142,7 @@ public class extractString extends Fragment {
         // OCR
         String extractedString = null;
         try {
-            extractedString = ocrEngine.ProcessOCR(picture);
+            extractedString = ocrEngine.StartOCR(picture);
         } catch (Exception e) {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }

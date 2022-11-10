@@ -1,6 +1,7 @@
 package OCR;
 
 import android.content.Context;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,12 +12,13 @@ import java.io.File;
 
 import helper.util;
 
-public class OCR_tesseract {
+public class tesseract implements engine {
 
     private String dataPath;
     private String languageCode;
     private TessBaseAPI tessAPI;
 
+    @Override
     public void SetLanguageCode(@NonNull Context ctx, String languageCode) {
         this.dataPath = ctx.getFilesDir().getAbsolutePath();
         this.languageCode = languageCode;
@@ -38,17 +40,21 @@ public class OCR_tesseract {
             util.CopyAsset(ctx, assetPath, dataFilePath);
         }
     }
-    
-    public void SetProgressNotifier(TessBaseAPI.ProgressNotifier pn) {
+
+    @Override
+    public void SetProgressbar(ProgressBar progressBar) {
         if (dataPath.isEmpty() || languageCode.isEmpty()) {
             return;
         }
+
+        TessBaseAPI.ProgressNotifier pn = progress -> progressBar.setProgress(progress.getPercent());
 
         tessAPI = new TessBaseAPI(pn);
         tessAPI.init(dataPath, languageCode);
     }
 
-    public String ProcessOCR(File picture) {
+    @Override
+    public String StartOCR(File picture) {
         if (tessAPI == null)
             if (dataPath.isEmpty() || languageCode.isEmpty()) {
                 return "어떤 언어로 할지 선택 해주세요";
@@ -64,6 +70,7 @@ public class OCR_tesseract {
         return util.ConvertHocrToText(hocrText);
     }
 
+    @Override
     public void StopOCR() {
         if (tessAPI != null) {
             tessAPI.stop();

@@ -25,7 +25,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.File;
 import java.util.Arrays;
 
-import OCR.OCR_tesseract;
 import checkSpelling.SpellingCheckEngine;
 import checkSpelling.SpellingCheckEngineMgr;
 import helper.util;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private File picture;
     
-    private OCR_tesseract tesseract;
+    private OCR.engine ocrEngine;
     private String ocrLanguage = "kor";
     private String ocrMenuSelectedLang;
     
@@ -102,9 +101,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 대망의 OCR 엔진
-        tesseract = new OCR_tesseract();
-        tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
+        // OCR 엔진. 일단 무료인 tesseract 사용
+        ocrEngine = new OCR.tesseract();
+        ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
 
         // 맞춤법 검사기 등록
         spellingCheckEngineMgr = new SpellingCheckEngineMgr();
@@ -122,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_setting) {
             showLanguageMenu();
+        } else if (itemId == R.id.menu_ocrEngine) {
+            showOcrMenu();
         } else if (itemId == R.id.menu_info) {
             showInfoMenu();
         }
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // 사진 언어 고르기
     private void showLanguageMenu() {
         final String[] languages = { "한글", "영어" };
 
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             }
             
             ocrLanguage = selectLang;
-            tesseract.SetLanguageCode(MainActivity.this, ocrLanguage);
+            ocrEngine.SetLanguageCode(MainActivity.this, ocrLanguage);
             SetExtractedString(""); // 언어 변경으로 문자열 다시 추출해야 함
 
             spellingCheckEngineMgr.SetLanguageCode(ocrLanguage);
@@ -168,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    // OCR 엔진 고르기
+    private void showOcrMenu() {
+    }
+
+    // 개발자 정보
     private void showInfoMenu() {
         final Dialog dialog = new Dialog(MainActivity.this);
 
@@ -246,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     // OCR
     public String GetOcrLanguage() { return ocrLanguage; }
-    public OCR_tesseract GetOcrEngine() { return tesseract; }
+    public OCR.engine GetOcrEngine() { return ocrEngine; }
     
     // 추출된 문자열
     public void SetExtractedString(String str) { extractedString = str; }
