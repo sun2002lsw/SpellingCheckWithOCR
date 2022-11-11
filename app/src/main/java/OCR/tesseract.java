@@ -19,13 +19,10 @@ public class tesseract implements engine {
     private TessBaseAPI tessAPI;
 
     @Override
-    public boolean NeedInvokeURL() { return false; }
+    public boolean NeedSecretKey() { return false; }
 
     @Override
-    public void SetInvokeURL(@NonNull String url) {}
-
-    @Override
-    public boolean IsValidInvokeURL(@NonNull String url) { return true; }
+    public void SetSecretKey(@NonNull String key) {}
 
     @Override
     public void SetLanguage(@NonNull Context ctx, @NonNull String language) {

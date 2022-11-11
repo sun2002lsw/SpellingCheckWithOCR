@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">맞춤법 검사기</string>
     <string name="menu_setting">읽을 언어 설정</string>
-    <string name="menu_ocrEngine">OCR 엔진 설정</string>
+    <string name="menu_OCR">OCR 설정</string>
+    <string name="menu_ocrEngine">엔진 설정</string>
+    <string name="menu_ocrSecretKey">비밀키 설정</string>
     <string name="menu_info">개발자 정보</string>
     <string name="toolbarTitle">사진 찍어서 맞춤법 검사하기</string>
     <string name="appTitle">사진 찍어서 맞춤법 검사</string>

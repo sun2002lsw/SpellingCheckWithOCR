@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,7 +123,9 @@ public class MainActivity extends AppCompatActivity {
         if (itemId == R.id.menu_setting) {
             showLanguageMenu();
         } else if (itemId == R.id.menu_ocrEngine) {
-            showOcrMenu();
+            showOcrEngineMenu();
+        } else if (itemId == R.id.menu_ocrSecretKey) {
+            showOcrSecretKeyMenu();
         } else if (itemId == R.id.menu_info) {
             showInfoMenu();
         }
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // OCR 엔진 고르기
-    private void showOcrMenu() {
+    private void showOcrEngineMenu() {
         final String[] ocrEngines = {
             OCR.tesseract.class.getSimpleName(),
             OCR.clova.class.getSimpleName()
@@ -205,6 +209,32 @@ public class MainActivity extends AppCompatActivity {
             String text = curOcrEngine + " 엔진이 유지 됩니다";
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         });
+
+        builder.show();
+    }
+
+    // OCR API 비밀키 입력 메뉴
+    private void showOcrSecretKeyMenu() {
+        if (!ocrEngineMgr.GetEngine().NeedSecretKey()) {
+            Toast.makeText(MainActivity.this, "현재 OCR 엔진은 비밀키가 필요 없습니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("비밀키를 입력해주세요");
+
+        final EditText editText = new EditText(MainActivity.this);
+        editText.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        builder.setView(editText);
+
+        builder.setPositiveButton("선택", (dialog, which) -> {
+            String secretKey = editText.getText().toString();
+            ocrEngineMgr.GetEngine().SetSecretKey(secretKey);
+
+            Toast.makeText(MainActivity.this, "비밀키가 변경되었습니다", Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("취소", (dialog, which) -> {});
 
         builder.show();
     }

@@ -8,9 +8,8 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 public interface engine {
-    boolean NeedInvokeURL();
-    void SetInvokeURL(@NonNull String url);
-    boolean IsValidInvokeURL(@NonNull String url);
+    boolean NeedSecretKey();
+    void SetSecretKey(@NonNull String key);
 
     void SetLanguage(@NonNull Context ctx, @NonNull String language);
     void SetProgressbar(@NonNull ProgressBar progressBar);

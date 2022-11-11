@@ -13,10 +13,23 @@
                 android:title="@string/menu_setting"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/menu_ocrEngine"
+                android:id="@+id/menu_OCR"
                 android:icon="@drawable/ic_baseline_settings_24"
-                android:title="@string/menu_ocrEngine"
-                app:showAsAction="ifRoom"/>
+                android:title="@string/menu_OCR"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/menu_ocrEngine"
+                        android:icon="@drawable/ic_baseline_content_paste_search_24"
+                        android:title="@string/menu_ocrEngine"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/menu_ocrSecretKey"
+                        android:icon="@drawable/ic_baseline_key_24"
+                        android:title="@string/menu_ocrSecretKey"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
             <item
                 android:id="@+id/menu_info"
                 android:icon="@drawable/ic_baseline_info_24"
