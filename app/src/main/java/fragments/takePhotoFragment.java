@@ -129,13 +129,6 @@ public class takePhotoFragment extends Fragment {
         File picture = util.MainActivity(this).GetPicture();
         if (picture != null) {
             AfterTakePicture(picture);
-        } else {
-            // 아직 아무 사진도 안 찍었으면, 이참에 폴더 정리
-            try {
-                DeleteAllPictureFiles();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         return view;
@@ -211,14 +204,14 @@ public class takePhotoFragment extends Fragment {
         }
         File storageDir = storageDirs[0];
 
-        // 임의의 파일 이름을 생성
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA).format(new Date());
-        String pictureFileName = "JPEG_" + timeStamp + "_";
-
         // 전용 사진 폴더에 임의 이름의 사진 파일 생성
-        return File.createTempFile(pictureFileName, ".jpg", storageDir);
+        File tempFile = File.createTempFile(util.KoreaTime() + "_", ".jpg", storageDir);
+        tempFile.deleteOnExit();
+
+        return tempFile;
     }
 
+    /*
     private void DeleteAllPictureFiles() throws IOException {
         Context ctx = getContext();
         if (ctx == null) {
@@ -240,4 +233,5 @@ public class takePhotoFragment extends Fragment {
             }
         }
     }
+    */
 }

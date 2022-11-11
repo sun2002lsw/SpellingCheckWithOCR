@@ -11,11 +11,9 @@ import java.util.ArrayList;
 
 public class English_quillbot implements engine {
 
-    final private String url = "https://quillbot.com/api/utils/grammar-check/";
-
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
-        Connection conn = Jsoup.connect(url);
+        Connection conn = Jsoup.connect("https://quillbot.com/api/utils/grammar-check/");
 
         conn = conn.header("accept", "*/*");
         conn = conn.header("accept-encoding", "gzip, deflate, br");

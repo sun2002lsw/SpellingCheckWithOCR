@@ -26,6 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,6 +42,18 @@ public class util {
 
     static public MainActivity MainActivity(@NonNull Fragment fragment) {
         return (MainActivity)fragment.getActivity();
+    }
+
+    @NonNull
+    static public String KoreaTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA);
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Seoul");
+        simpleDateFormat.setTimeZone(timeZone);
+
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+
+        return simpleDateFormat.format(date);
     }
 
     @NonNull
@@ -138,12 +155,6 @@ public class util {
         }
 
         return sb.toString().trim();
-    }
-
-    @NonNull
-    static public String GetTimeStamp() {
-        Long currentTime = System.currentTimeMillis() / 1000;
-        return currentTime.toString();
     }
 
     @NonNull

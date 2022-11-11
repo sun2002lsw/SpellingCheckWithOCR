@@ -15,21 +15,19 @@ import java.util.ArrayList;
 
 public class Korean_saramin implements engine {
 
-    final private String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
-
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
         Document doc;
         try {
+            String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
             doc = Jsoup.connect(url).ignoreContentType(true).data("content", sentence).post();
         } catch (IOException e) {
             throw new Exception("사람인 홈페이지 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
         }
-        String jsonStr = extractJsonStrFromDoc(doc);
 
         JSONObject jsonObject;
         try {
-            jsonObject = new JSONObject(jsonStr);
+            jsonObject = new JSONObject(extractJsonStrFromDoc(doc));
         } catch (JSONException e) {
             throw new Exception("body -> Json 변환에 실패했습니다. 응답 양식이 변경되었습니다.");
         }
