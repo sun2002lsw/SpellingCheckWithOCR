@@ -5,8 +5,16 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import helper.util;
 
 public class clova implements engine {
 
@@ -46,13 +54,53 @@ public class clova implements engine {
     public String StartOCR(@NonNull File picture) {
         isStopped.set(false);
 
-        // process ocr
-
+        String result = processOCR(picture);
         if (isStopped.get()) {
             return "";
         }
 
-        return "result";
+        return result;
+    }
+
+    @NonNull
+    private String processOCR(@NonNull File picture) {
+        Document doc;
+        try {
+            doc = requestAPI(picture.getName(), util.GetBase64EncodingFromJPG(picture));
+        } catch (Exception e) {
+            return e.toString();
+        }
+
+        return doc.toString();
+    }
+
+    private Document requestAPI(@NonNull String fileName, @NonNull String base64EncodingImageBytes) throws Exception {
+        // 가장 중요한 사진 파일 정보
+        JSONObject image = new JSONObject();
+        image.put("format", "jpg");
+        image.put("name", fileName);
+        image.put("data", base64EncodingImageBytes);
+
+        // 사진 파일을 묶어서 보낼 수 있지만, 1장만 보낸다
+        JSONArray images = new JSONArray();
+        images.put(image);
+        
+        // 사진 정보를 비롯한 기타 정보로 body 구성
+        JSONObject bodyJson = new JSONObject();
+        bodyJson.put("version", "V2");
+        bodyJson.put("requestId", clova.class.getName());
+        bodyJson.put("timestamp", util.GetTimeStamp());
+        bodyJson.put("images", images);
+        bodyJson.put("enableTableDetection", true);
+
+        // request 전송
+        Connection conn = Jsoup.connect(invokeURL);
+
+        conn = conn.header("X-OCR-SECRET", secretKey);
+        conn = conn.header("Content-Type", "application/json");
+        conn = conn.requestBody(bodyJson.toString());
+
+        return conn.post();
     }
 
     @Override

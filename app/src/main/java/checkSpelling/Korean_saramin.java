@@ -15,11 +15,10 @@ import java.util.ArrayList;
 
 public class Korean_saramin implements engine {
 
-    @NonNull
+    final private String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
+
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
-        String url = "https://www.saramin.co.kr/zf_user/tools/spell-check";
-
         Document doc;
         try {
             doc = Jsoup.connect(url).ignoreContentType(true).data("content", sentence).post();

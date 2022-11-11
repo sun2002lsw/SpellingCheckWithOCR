@@ -11,11 +11,12 @@ import java.util.ArrayList;
 
 public class English_quillbot implements engine {
 
+    final private String url = "https://quillbot.com/api/utils/grammar-check/";
+
     @Override
     public ArrayList<WrongWordInfo> CheckSpelling(String sentence) throws Exception {
-        String url = "https://quillbot.com/api/utils/grammar-check/";
-
         Connection conn = Jsoup.connect(url);
+
         conn = conn.header("accept", "*/*");
         conn = conn.header("accept-encoding", "gzip, deflate, br");
         conn = conn.header("accept-language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
@@ -58,22 +59,21 @@ public class English_quillbot implements engine {
         conn = conn.referrer("https://quillbot.com/grammar-check");
         conn = conn.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36");
 
-        JSONObject request = new JSONObject();
-        request.put("text", sentence);
-        request.put("isFluency", true);
-        request.put("checkForComplexity", true);
-        request.put("checkForFormality", false);
-        request.put("explainSuggestions", true);
+        JSONObject bodyJson = new JSONObject();
+        bodyJson.put("text", sentence);
+        bodyJson.put("isFluency", true);
+        bodyJson.put("checkForComplexity", true);
+        bodyJson.put("checkForFormality", false);
+        bodyJson.put("explainSuggestions", true);
 
         Document doc;
         try {
-            doc = conn.requestBody(request.toString()).ignoreContentType(true).post();
+            doc = conn.requestBody(bodyJson.toString()).ignoreContentType(true).post();
         } catch (Exception e) {
             throw new Exception("quillbot 홈페이지 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
         }
 
         Log.d("debug", doc.text());
-
 
         return null;
     }

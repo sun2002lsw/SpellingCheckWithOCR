@@ -2,7 +2,10 @@ package helper;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -16,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -105,7 +109,7 @@ public class util {
         return extractStringFromNodeList(root.getChildNodes());
     }
 
-    private static Document loadXMLFromString(String xml) throws Exception
+    static private Document loadXMLFromString(String xml) throws Exception
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -114,7 +118,7 @@ public class util {
     }
 
     @NonNull
-    private static String extractStringFromNodeList(@NonNull NodeList childList) {
+    static private String extractStringFromNodeList(@NonNull NodeList childList) {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < childList.getLength(); i++) {
@@ -134,5 +138,21 @@ public class util {
         }
 
         return sb.toString().trim();
+    }
+
+    @NonNull
+    static public String GetTimeStamp() {
+        Long currentTime = System.currentTimeMillis() / 1000;
+        return currentTime.toString();
+    }
+
+    @NonNull
+    static public String GetBase64EncodingFromJPG(@NonNull File file) {
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 }
