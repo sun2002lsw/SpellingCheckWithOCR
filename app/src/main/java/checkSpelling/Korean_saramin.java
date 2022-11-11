@@ -53,10 +53,12 @@ public class Korean_saramin implements engine {
     private String extractJsonStrFromDoc(@NonNull Document doc) {
         Element body = doc.getElementsByTag("body").first();
 
+        // 디코딩 하기
         String decodedStr = body.toString();
         decodedStr = StringEscapeUtils.unescapeJava(decodedStr);
         decodedStr = StringEscapeUtils.unescapeHtml4(decodedStr);
 
+        // 쓸데 없는 문자들 지우기
         String jsonStr = decodedStr.replaceAll("<.*?>", "");
         jsonStr = jsonStr.replaceAll("\\n ", "");
         jsonStr = jsonStr.replaceAll("\\r\\n", "");

@@ -35,7 +35,7 @@ public class checkSpellingFragment extends Fragment {
             return view;
         }
 
-        String extractedString = util.MainActivity(checkSpellingFragment.this).GetExtractedString();
+        String extractedString = util.MainActivity(this).GetExtractedString();
         if (extractedString.isEmpty()) {
             util.MainActivity(this).EnableTab(0);
             return view;
@@ -56,7 +56,7 @@ public class checkSpellingFragment extends Fragment {
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
-            util.MainActivity(checkSpellingFragment.this).SetSwipeEnable(!isLargeOriginalView);
+            util.MainActivity(this).SetSwipeEnable(!isLargeOriginalView);
         });
 
         spellingCheckView = view.findViewById(R.id.spellingCheckTextView);
@@ -72,13 +72,13 @@ public class checkSpellingFragment extends Fragment {
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
-            util.MainActivity(checkSpellingFragment.this).SetSwipeEnable(!isLargeCheckView);
+            util.MainActivity(this).SetSwipeEnable(!isLargeCheckView);
         });
 
         // 맞춤법 검사
         new Thread(() -> {
             ArrayList<WrongWordInfo> wrongWordInfos;
-            checkSpelling.engine checkEngine = util.MainActivity(checkSpellingFragment.this).GetSpellingCheckEngine();
+            checkSpelling.engine checkEngine = util.MainActivity(this).GetSpellingCheckEngine();
 
             StringBuilder checkedStr = new StringBuilder();
             try {
