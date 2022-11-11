@@ -6,12 +6,16 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import helper.util;
@@ -20,6 +24,8 @@ public class clova implements engine {
 
     final private String invokeURL = "https://qnob8o6ets.apigw.ntruss.com/custom/v1/19142/4d7927deced46e4f867246e5881c3d08694f9735df2d955cea18b5e47d5acdbe/general";
     private String secretKey = "";
+
+    private ProgressBar progressBar;
     final private AtomicBoolean isStopped = new AtomicBoolean();
 
     @Override
@@ -35,23 +41,11 @@ public class clova implements engine {
     }
 
     @Override
-    public void SetProgressbar(@NonNull ProgressBar progressBar) {
-        new Thread(() -> {
-            for (int fakeProgress = 0; fakeProgress < 90; fakeProgress++) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                progressBar.setProgress(fakeProgress);
-            }
-        }).start();
-    }
+    public void SetProgressbar(@NonNull ProgressBar pb) { progressBar = pb; }
 
     @Override
-    @NonNull
-    public String StartOCR(@NonNull File picture) {
+    public String StartOCR(@NonNull File picture) throws Exception {
+        progressBar.setProgress(10);
         isStopped.set(false);
 
         String result = processOCR(picture);
@@ -63,21 +57,30 @@ public class clova implements engine {
     }
 
     @NonNull
-    private String processOCR(@NonNull File picture) {
+    private String processOCR(@NonNull File picture) throws Exception {
+        // API 호출하기
         Document doc;
         try {
             doc = requestAPI(picture.getName(), util.GetBase64EncodingFromJPG(picture));
-        } catch (Exception e) {
-            return e.toString();
+        } catch (HttpStatusException e) {
+            if (e.getStatusCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+                throw new Exception("유효하지 않은 API 비밀키입니다\n비밀키를 다시 설정해주세요");
+            } else {
+                throw e;
+            }
         }
+        progressBar.setProgress(80);
 
-        return doc.toString();
+        // 응답값 파싱하기
+        return extractResultFromDoc(doc);
     }
 
     private Document requestAPI(@NonNull String fileName, @NonNull String base64EncodingImageBytes) throws Exception {
+        progressBar.setProgress(20);
+
         // 가장 중요한 사진 파일 정보
         JSONObject image = new JSONObject();
-        image.put("format", "jpg");
+        image.put("format", "png");
         image.put("name", fileName);
         image.put("data", base64EncodingImageBytes);
 
@@ -89,18 +92,48 @@ public class clova implements engine {
         JSONObject bodyJson = new JSONObject();
         bodyJson.put("version", "V2");
         bodyJson.put("requestId", clova.class.getName());
-        bodyJson.put("timestamp", util.GetTimeStamp());
+        bodyJson.put("timestamp", System.currentTimeMillis() / 1000);
         bodyJson.put("images", images);
-        bodyJson.put("enableTableDetection", true);
+
+        progressBar.setProgress(30);
 
         // request 전송
         Connection conn = Jsoup.connect(invokeURL);
-
         conn = conn.header("X-OCR-SECRET", secretKey);
         conn = conn.header("Content-Type", "application/json");
         conn = conn.requestBody(bodyJson.toString());
 
-        return conn.post();
+        progressBar.setProgress(50);
+        return conn.ignoreContentType(true).post();
+    }
+
+    @NonNull
+    private String extractResultFromDoc(@NonNull Document doc) throws JSONException {
+        Element body = doc.getElementsByTag("body").first();
+        String jsonStr = body.toString().replaceAll("<.*?>", "");
+
+        JSONObject fullJson = new JSONObject(jsonStr);
+        JSONArray images = fullJson.getJSONArray("images");
+
+        // 항상 사진을 한장만 보내는 것으로 확정
+        JSONObject pictureJson = images.getJSONObject(0);
+        JSONArray fields = pictureJson.getJSONArray("fields");
+
+        progressBar.setProgress(90);
+
+        StringBuilder allText = new StringBuilder();
+        for (int i = 0; i < fields.length(); i++) {
+            JSONObject field = fields.getJSONObject(i);
+
+            String text = field.getString("inferText");
+            if (field.getDouble("inferConfidence") < 0.7) {
+                text = "?";
+            }
+
+            allText.append(text);
+        }
+
+        return allText.toString();
     }
 
     @Override

@@ -14,7 +14,6 @@ public interface engine {
     void SetLanguage(@NonNull Context ctx, @NonNull String language);
     void SetProgressbar(@NonNull ProgressBar progressBar);
 
-    @NonNull
-    String StartOCR(@NonNull File picture);
+    String StartOCR(@NonNull File picture) throws Exception;
     void StopOCR();
 }

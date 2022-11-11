@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -147,7 +146,10 @@ public class extractStringFragment extends Fragment {
         try {
             extractedString = ocrEngine.StartOCR(picture);
         } catch (Exception e) {
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            activity.runOnUiThread(() -> {
+                util.MainActivity(extractStringFragment.this).ShowShortToast(e.getMessage());
+                util.MainActivity(extractStringFragment.this).EnableTab(0);
+            });
         }
 
         // 작업 도중에 뭔가 다른짓해서 현재 Fragment 파괴됨

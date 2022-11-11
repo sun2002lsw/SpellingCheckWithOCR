@@ -60,7 +60,6 @@ public class tesseract implements engine {
     }
 
     @Override
-    @NonNull
     public String StartOCR(@NonNull File picture) {
         if (tessAPI == null)
             if (dataPath.isEmpty() || language.isEmpty()) {

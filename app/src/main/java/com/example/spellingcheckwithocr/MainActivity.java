@@ -306,11 +306,14 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setCurrentItem(position);
     }
+
+    // fragment 파괴에 따른 toast 요청 (context가 없어서 못 띄워..)
+    public void ShowShortToast(String text) {
+        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+    }
     
     // 손으로 밀어서 화면 넘기는거 설정 or 해제
-    public void SetSwipeEnable(boolean enabled) {
-        viewPager.setUserInputEnabled(enabled);
-    }
+    public void SetSwipeEnable(boolean enabled) { viewPager.setUserInputEnabled(enabled); }
 
     // 촬영한 사진
     public void SetPicture(File newPicture) { picture = newPicture; }
