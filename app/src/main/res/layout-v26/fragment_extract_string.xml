@@ -50,7 +50,7 @@
         android:padding="10dp">
 
         <LinearLayout
-            android:id="@+id/fakeLayoutForBoxLine"
+            android:id="@+id/fakeLayoutForBoxLine1"
             android:orientation="horizontal"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -87,6 +87,7 @@
                     android:id="@+id/extractedString"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
                     android:textColor="@color/black" />
 
             </ScrollView>

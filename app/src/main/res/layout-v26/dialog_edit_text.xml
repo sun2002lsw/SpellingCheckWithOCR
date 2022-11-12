@@ -4,27 +4,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/largeTextViewForEdit"
+    <LinearLayout
+        android:id="@+id/fakeLayoutForBoxLine2"
+        android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:autofillHints=""
+        android:layout_margin="20dp"
         android:background="@drawable/bg_edit_text"
-        android:ems="10"
-        android:gravity="top"
-        android:hint="@string/emptyHint"
-        android:inputType="textMultiLine"
-        android:scrollbarSize="10dp"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/saveEditedText"
+        app:layout_constraintBottom_toTopOf="@id/saveEditedText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
+        android:fillViewport="true"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbarSize="5dp"
+        android:verticalScrollbarPosition="left"
+        app:layout_constraintBottom_toTopOf="@id/saveEditedText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/largeTextViewForEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/editHint"
+            android:autofillHints=""
+            android:gravity="top"
+            android:inputType="textMultiLine" />
+
+    </ScrollView>
 
     <Button
         android:id="@+id/cancelEditedText"
