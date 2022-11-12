@@ -23,7 +23,6 @@ import helper.util;
 
 public class checkSpellingFragment extends Fragment {
 
-    boolean isLargeOriginalView;
     boolean isLargeCheckView;
     TextView spellingCheckView;
 
@@ -45,19 +44,7 @@ public class checkSpellingFragment extends Fragment {
         TextView textView = view.findViewById(R.id.originalTextView);
         textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setText(extractedString);
-        textView.setOnClickListener(v -> {
-            if (isLargeOriginalView) {
-                isLargeOriginalView = false;
-                ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
-            }else {
-                isLargeOriginalView = true;
-                ConstraintLayout layout = view.findViewById(R.id.originalViewLayout);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            }
-
-            util.MainActivity(this).SetSwipeEnable(!isLargeOriginalView);
-        });
+        textView.setOnClickListener(v -> util.MainActivity(this).MoveTab(1));
 
         spellingCheckView = view.findViewById(R.id.spellingCheckTextView);
         spellingCheckView.setMovementMethod(new ScrollingMovementMethod());
