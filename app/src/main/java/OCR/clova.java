@@ -59,6 +59,7 @@ public class clova implements engine {
     @NonNull
     private String processOCR(@NonNull File picture) throws Exception {
         // API 호출하기
+        progressBar.setProgress(10);
         Document doc;
         try {
             doc = requestAPI(picture.getName(), util.GetBase64EncodingFromJPG(picture));
@@ -69,14 +70,14 @@ public class clova implements engine {
                 throw e;
             }
         }
-        progressBar.setProgress(80);
 
         // 응답값 파싱하기
+        progressBar.setProgress(95);
         return extractResultFromDoc(doc);
     }
 
     private Document requestAPI(@NonNull String fileName, @NonNull String base64EncodingImageBytes) throws Exception {
-        progressBar.setProgress(20);
+        progressBar.setProgress(30);
 
         // 가장 중요한 사진 파일 정보
         JSONObject image = new JSONObject();
@@ -95,7 +96,7 @@ public class clova implements engine {
         bodyJson.put("timestamp", System.currentTimeMillis() / 1000);
         bodyJson.put("images", images);
 
-        progressBar.setProgress(30);
+        progressBar.setProgress(50);
 
         // request 전송
         Connection conn = Jsoup.connect(invokeURL);
@@ -103,7 +104,7 @@ public class clova implements engine {
         conn = conn.header("Content-Type", "application/json");
         conn = conn.requestBody(bodyJson.toString());
 
-        progressBar.setProgress(50);
+        progressBar.setProgress(80);
         return conn.ignoreContentType(true).post();
     }
 
@@ -115,19 +116,20 @@ public class clova implements engine {
         JSONObject fullJson = new JSONObject(jsonStr);
         JSONArray images = fullJson.getJSONArray("images");
 
-        // 항상 사진을 한장만 보내는 것으로 확정
+        // 항상 사진을 1장만 요청함
         JSONObject pictureJson = images.getJSONObject(0);
         JSONArray fields = pictureJson.getJSONArray("fields");
 
-        progressBar.setProgress(90);
-
+        // 해당 사진의 모든 출력값 추출
         StringBuilder allText = new StringBuilder();
         for (int i = 0; i < fields.length(); i++) {
             JSONObject field = fields.getJSONObject(i);
 
             String text = field.getString("inferText");
+            text += field.getBoolean("lineBreak") ? "\n" : " ";
+
             if (field.getDouble("inferConfidence") < 0.7) {
-                text = "?";
+                text = "۞ ";
             }
 
             allText.append(text);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +62,6 @@ public class extractStringFragment extends Fragment {
         progressCircle.setVisibility(View.VISIBLE);
         
         textView = view.findViewById(R.id.extractedString);
-        textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setOnClickListener(v -> {
             if (isLargeTextView) {
                 isLargeTextView = false;
