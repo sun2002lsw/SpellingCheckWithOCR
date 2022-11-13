@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.spellingcheckwithocr.MainActivity;
 import com.example.spellingcheckwithocr.R;
 
 import java.io.File;
@@ -167,6 +169,9 @@ public class extractStringFragment extends Fragment {
         }
 
         // 작업 성공
+        String msg = ocrEngine.getClass().getSimpleName() + " 엔진으로 사진을 읽었습니다";
+        activity.runOnUiThread(() -> Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show());
+        
         util.MainActivity(this).SetExtractedString(extractedString);
         afterOCR(activity, extractedString);
     }
