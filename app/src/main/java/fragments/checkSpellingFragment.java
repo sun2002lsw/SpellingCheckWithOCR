@@ -87,7 +87,6 @@ public class checkSpellingFragment extends Fragment {
                 for (int i = 0; i < wrongWordInfos.size(); i ++) {
                     checkedStr.append(makeWrongWordCheckStr(i, wrongWordInfos.get(i)));
                 }
-                checkedStr.append("끝");
             } catch (Exception e) {
                 checkedStr = new StringBuilder(e.toString());
             }
@@ -101,7 +100,9 @@ public class checkSpellingFragment extends Fragment {
     private void afterSpellingCheck(@NonNull View view, @NonNull FragmentActivity activity, @NonNull String checkedStr) {
         ProgressBar progressCircle = view.findViewById(R.id.checkSpellingProgress);
         if (checkedStr.isEmpty()) {
-            checkedStr = "※ 고칠 부분이 없습니다~ 대단해요!";
+            checkedStr = "※ 고칠 부분이 없습니다~";
+        } else {
+            checkedStr+= "끝";
         }
 
         String finalCheckedStr = checkedStr;

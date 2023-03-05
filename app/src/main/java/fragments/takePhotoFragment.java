@@ -178,7 +178,11 @@ public class takePhotoFragment extends Fragment {
 
         // 다음 탭 진행 버튼 등장
         String language = util.MainActivity(this).GetOcrLanguage();
-        String btnText = util.LanguageCodeToKorean(language) + " 읽기";
+        OCR.engine ocrEngine = util.MainActivity(this).GetOcrEngine();
+
+        String langKorean = util.LanguageCodeToKorean(language);
+        String engineName = ocrEngine.getClass().getSimpleName();
+        String btnText = engineName + " 사용해서 " + langKorean + " 읽기";
 
         extractStringBnt.setEnabled(true);
         extractStringBnt.setText(btnText);

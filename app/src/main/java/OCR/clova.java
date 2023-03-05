@@ -125,12 +125,13 @@ public class clova implements engine {
         for (int i = 0; i < fields.length(); i++) {
             JSONObject field = fields.getJSONObject(i);
 
-            String text = field.getString("inferText");
-            text += field.getBoolean("lineBreak") ? "\n" : " ";
-
-            if (field.getDouble("inferConfidence") < 0.7) {
-                text = "۞ ";
+            String text = "";
+            if (field.getDouble("inferConfidence") >= 0.7) {
+                text = field.getString("inferText");
+            } else {
+                text = "☠";
             }
+            text += field.getBoolean("lineBreak") ? "\n" : " ";
 
             allText.append(text);
         }
